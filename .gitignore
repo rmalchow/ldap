@@ -1,0 +1,6 @@
+**/.settings
+**/.project
+**/target
+**/.classpath
+m2
+ldap-app.jar

@@ -1,0 +1,62 @@
+<div class="col-md-12">
+	<h1><a href="#/main/ldap">LDAP</a>
+</div>
+<div class="col-md-12"> 
+	<div class="form-group">
+		<form>
+			<div class="input-group">
+				<input class="form-control" id="filter" ng-model="ldap.search.filter" ng-submit="ldap.openFirst()" ng-change="ldap.update()" placeholder="Type to filter ... ">
+				<div class="input-group-append">
+					<button class="btn" ng-disabled="ldap.search.filter.length <1"
+							ng-class="{'btn-primary' : ldap.search.units, 'btn-secondary' : !ldap.search.units}" 
+							ng-click="ldap.search.units=!ldap.search.units;ldap.updateInternal()">
+						&nbsp;<i class="fas fa-folder-open"></i>&nbsp;
+					</button>
+					<button class="btn" ng-disabled="ldap.search.filter.length <1"
+							ng-class="{'btn-primary' : ldap.search.groups, 'btn-secondary' : !ldap.search.groups}" 
+							ng-click="ldap.search.groups=!ldap.search.groups;ldap.updateInternal()">
+						&nbsp;<i class="fas fa-users"></i>&nbsp;
+					</button>
+					<button class="btn" ng-disabled="ldap.search.filter.length <1"
+						ng-class="{'btn-primary' : ldap.search.users, 'btn-secondary' : !ldap.search.users}" 
+						ng-click="ldap.search.users=!ldap.search.users;ldap.updateInternal()">
+						&nbsp;<i class="fas fa-user"></i>&nbsp;
+					</button>
+				</div>						
+			</div>
+		</form>
+	</div>
+</div>
+<div class="col-md-12" ng-if="ldap.search.filter.length == 0">
+	<div class="form-group">
+		<div ldap-tree id="ROOT">
+		</div>
+	</div>
+</div>
+<div class="col-md-12" ng-if="ldap.search.filter.length > 0">
+	<div class="form-group">
+		<table class="table table-compact">
+			<tr ng-if="!ldap.entries">
+				<td colspan="2">
+					<i>please wait ... </i>
+				</td>
+			</tr>
+			<tr ng-if="ldap.entries && ldap.entries.length == 0">
+				<td colspan="3" class="alert alert-info">
+					<i>no matching object found ... </i>
+				</td>
+			</tr>
+			<tr ng-repeat="entry in ldap.entries" ng-click="ldap.open(entry.id)" ng-mouseover="entry.active = true" ng-mouseout="entry.active = false" ng-class="{'table-active' : entry.active}">
+				<td width="5%">
+					<i class="fa fa-user" ng-if="entry.type == 'USER'"></i>
+					<i class="fa fa-users" ng-if="entry.type == 'GROUP'"></i>
+					<i class="fa fa-folder-open" ng-if="entry.type == 'UNIT'"></i>
+				</td>
+				<td width="95%">
+					<b>{{entry.displayname}}</b><span ng-if="entry.type == 'USER'"> ({{entry.name}})</span><br>
+					<small>{{entry.hierarchy | join:' | '}}</small>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

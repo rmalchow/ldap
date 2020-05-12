@@ -1,0 +1,29 @@
+stages:
+- maven
+- docker
+
+cache:
+  untracked: true
+  key: "ldap-m2"
+  paths:
+  - m2 
+
+build-jar:
+  stage: maven
+  image: maven
+  tags: 
+  - docker
+  script:
+  - sh scripts/build-maven.sh
+  artifacts:
+    paths:
+    - ldap-app.jar
+    expire_in: 20 mins
+    
+build-docker:
+  stage: docker
+  image: docker
+  tags: 
+  - docker
+  script:
+  - sh scripts/build-docker.sh

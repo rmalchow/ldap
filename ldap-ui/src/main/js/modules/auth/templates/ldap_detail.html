@@ -1,0 +1,485 @@
+<div class="col-md-12">
+	<h1><a href="#/main/ldap">LDAP</a> | 
+	<i class="fa fa-user" ng-if="ldap.entry.type == 'USER'"></i>
+	<i class="fa fa-users" ng-if="ldap.entry.type == 'GROUP'"></i>
+	<i class="fa fa-folder-open" ng-if="ldap.entry.type == 'UNIT'"></i>
+	{{ldap.entry.displayname}} </h1>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-8">
+	<span ng-repeat="a in ldap.entry.ancestors">
+		<i class="fas fa-chevron-right"></i>
+		<span class="btn btn-sm btn-link" style="font-size: 1.2em" ng-click="ldap.open(a[1])">{{a[0]}}
+		</span>
+	</span> 	
+</div>
+<div class="col-md-4 hidden-sm  hidden-xs">
+	<span
+		ng-if="ldap.entry.type == 'USER'"
+		an-select class="form-control"
+		query="ldap.queryUsers"
+		resolve="ldap.resolve"
+		ng-model="ldap.choseOtherId"
+		placeholder="'Jump to user ... '"
+		ng-change="ldap.open(ldap.choseOtherId)">
+	</span>
+	<span
+		ng-if="ldap.entry.type == 'GROUP'"
+		an-select class="form-control"
+		query="ldap.queryGroups"
+		resolve="ldap.resolve"
+		ng-model="ldap.choseOtherId"
+		placeholder="'Jump to group ... '"
+		ng-change="ldap.open(ldap.choseOtherId)">
+	</span>
+</div>
+
+<div class="col-md-12">
+	<div class="float-right">
+		&nbsp;<br>
+		<div class="input-group">
+			<button class="form-control btn btn-primary float-right" ng-if="!ldap.edit" ng-click="ldap.toggleEdit()">
+				<i class="fas fa-pencil-alt" ></i>
+			</button>
+			<button class="form-control btn float-right" ng-class="{'btn-danger' : ldap.modified, 'btn-success' : !ldap.modified}" ng-if="ldap.edit" ng-click="ldap.toggleEdit()">
+				<i class="fas fa-save"></i>
+			</button>
+		</div>
+	</div>
+	<h4>
+		Basics
+	</h4>
+</div>
+<div class="col-md-5"> 
+	<div class="form-group">
+		<b>Full DN</b><br>
+		{{ldap.entry.dn}}
+	</div>
+</div>
+<div class="col-md-4">
+	<div class="form-group">
+		<b>ID</b><br>
+		{{ldap.entry.id}}
+	</div>
+</div>
+<div class="col-md-3"  ng-if="ldap.entry.type == 'USER'"> 
+	<div class="form-group">
+		<b>Status</b><br>
+		<button class="btn" ng-class="{'btn-success' : ldap.edit}"  ng-disabled="!ldap.edit || !ldap.permissions.includes('SET_USER_STATE')" ng-if="ldap.entry.enabled" ng-click="ldap.enableUser(ldap.entry.id,false)">
+			<i class="fas fa-toggle-on"></i> Enabled
+		</button>
+		<button class="btn" ng-class="{'btn-danger' : ldap.edit}" ng-disabled="!ldap.edit || !ldap.permissions.includes('SET_USER_STATE')" ng-if="!ldap.entry.enabled" ng-click="ldap.enableUser(ldap.entry.id,true)">
+			<i class="fas fa-toggle-off"></i> Disabled
+		</button>
+	</div>
+</div>
+
+<div class="col-md-12"> 
+	<div class="form-group">
+		<b>Name</b><br>
+		{{ldap.entry.name || "[no UID]"}}
+		<i class="glyphicon glyphicon-pencil"></i>
+	</div>
+</div>
+<div class="col-md-2" ng-if="ldap.entry.type == 'USER'"> 
+	<div class="form-group">
+		<b>Givenname</b><br>
+		<span ng-if="!ldap.edit">
+			{{ldap.entry.givenname  || "[no givenname]"}}
+		</span>
+		<input ng-if="ldap.edit" ng-model="ldap.entry.givenname" placeholder="enter givenname" class="form-control" ng-change="ldap.modify()">
+	</div>
+</div>
+<div class="col-md-3" ng-if="ldap.entry.type == 'USER'"> 
+	<div class="form-group">
+		<b>Familyname</b><br>
+		<span ng-if="!ldap.edit">
+			{{ldap.entry.familyname  || "[no familyname]"}}
+		</span>
+		<input ng-if="ldap.edit" ng-model="ldap.entry.familyname" placeholder="enter familyname" class="form-control" ng-change="ldap.modify()">
+	</div>
+</div>
+<div class="col-md-4" ng-if="ldap.entry.type == 'USER'"> 
+	<div class="form-group">
+		<b>Display Name</b><br>
+		<span ng-if="!ldap.edit">
+			{{ldap.entry.displayname  || "[no display name]"}}
+		</span>
+		<input ng-if="ldap.edit" ng-model="ldap.entry.displayname" placeholder="enter display name" class="form-control" ng-change="ldap.modify()">
+	</div>
+</div>
+<div class="col-md-3"  ng-if="ldap.entry.type == 'USER'"> 
+	<div class="form-group">
+		<b>E-Mail</b><br>
+		<span ng-if="!ldap.edit">
+			{{ldap.entry.email || "[no email]"}}
+		</span>
+		<input ng-if="ldap.edit" ng-model="ldap.entry.email" placeholder="enter email" class="form-control" ng-change="ldap.modify()">
+	</div>
+</div>
+<div class="col-md-12"> 
+	<div class="form-group">
+		<b>Description</b><br>
+		<span ng-if="!ldap.edit">
+			{{ldap.entry.description || "[no description]" }}
+		</span>
+		<textarea ng-if="ldap.edit" ng-model="ldap.entry.description" class="form-control" rows="3" cols="40" ng-change="ldap.modify()"></textarea>
+	</div>
+</div>
+<div class="col-md-12" ng-if="ldap.entry.type == 'USER' && (ldap.permissions.includes('PW_RESET') || ldap.self)">
+	<h4>Set Password</h4>
+	<div ng-click="ldap.setpw.show = true" ng-if="!ldap.setpw.show">
+		<i>Click to show</i>
+	</div>
+	<div class="row" ng-if="ldap.setpw.show">
+		<div class="col-md-3" ng-if="ldap.self">
+			<div class="form-group">
+				<input type="password" ng-model="ldap.setpw.oldPw" class="form-control" placeholder="Enter current password" >
+			</div>
+		</div>
+		<div  ng-class="{'col-3' : ldap.self, 'col-4' : !ldap.self}">
+			<div class="form-group">
+				<div class="input-group">
+					<input ng-if="!ldap.setpw.visiblePw" type="password" ng-model="ldap.setpw.pw1" class="form-control" placeholder="Enter password (8 chars min)" ng-change="ldap.checkPassword(ldap.setpw)">
+					<input ng-if="ldap.setpw.visiblePw" ng-model="ldap.setpw.pw1" class="form-control" placeholder="Enter password (8 chars min)" ng-change="ldap.checkPassword(ldap.setpw)">
+				</div>
+			</div>
+			<div class="form-group" ng-if="ldap.setpw.pw1.length > 0">
+				<div class="progress" style="height: 3px;">
+				  <div class="progress-bar bg-success" role="progressbar" ng-style="ldap.setpw.progressWidth" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+				</div>
+			</div>
+		</div>
+		<div  ng-class="{'col-3' : ldap.self, 'col-4' : !ldap.self}">
+			<div class="form-group">
+				<input ng-if="!ldap.setpw.visiblePw" type="password" ng-disabled="ldap.setpw.progress < 100" ng-model="ldap.setpw.pw2" class="form-control" placeholder="confirm password" ng-change="ldap.checkPassword(ldap.setpw)">
+				<input ng-if="ldap.setpw.visiblePw" ng-disabled="ldap.setpw.progress < 100" ng-model="ldap.setpw.pw2" class="form-control" placeholder="confirm password" ng-change="ldap.checkPassword(ldap.setpw)">
+			</div>
+		</div>
+		<div ng-class="{'col-3' : ldap.self, 'col-4' : !ldap.self}">
+			<div class="form-group float-right">
+				<div class="input-group">
+					<button class="btn btn-dark" ng-click="ldap.generatePassword(ldap.setpw)">
+						<i class="fas fa-dice"></i>
+					</button>
+					<button class="ml-2 btn btn-dark" ng-click="ldap.toggleShowPassword(ldap.setpw)">
+						<i class="fas fa-eye"></i>
+					</button>
+					<button class="ml-2 btn" 
+						ng-class="{'btn-primary' : ldap.setpw.state>-1,'btn-success' : ldap.setpw.state==-2,'btn-danger' : ldap.setpw.state==-3}"
+						ng-disabled="!ldap.setpw.ok" ng-click="ldap.setPassword(ldap.setpw)">
+						Reset
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+<div class="col-md-12" ng-if="ldap.entry.type == 'GROUP'"> 
+	<h4>Members</h4>
+	<table class="table table-compact">
+		<tr ng-if="ldap.members.length==0" colspan="3">
+			<td><i>No members</i></td>
+		</tr>
+		<tr ng-repeat="entry in ldap.members" ng-mouseover="entry.active = true" ng-mouseout="entry.active = false" ng-class="{'table-active' : entry.active}">
+			<td width="5%">
+				<i class="fa fa-user" ng-if="entry.type == 'USER'"></i>
+				<i class="fa fa-users" ng-if="entry.type == 'GROUP'"></i>
+				<i class="fa fa-folder-open" ng-if="entry.type == 'UNIT'"></i>
+			</td>
+			<td width="80%">
+				<b>{{entry.displayname}}</b><span ng-if="entry.type == 'USER'"> ({{entry.name}})</span><br>
+				<small>{{entry.hierarchy | join:' | '}}</small>
+			</td>
+			<td width="10%">
+				<button class="btn btn-sm btn-danger float-right" ng-click="ldap.removeMember(ldap.entry.id,entry.id)">
+					<i class="fas fa-minus"></i>
+				</button>
+			</td>
+		</tr>
+		<tr ng-if="ldap.permissions && ldap.permissions.includes('EDIT_MEMBERS')">
+			<td colspan="3">
+				<b ng-click="ldap.addMemberExpanded = !ldap.addMemberExpanded">
+					<i class="fas fa-plus-square" ng-if="!ldap.addMemberExpanded"></i> 
+					<i class="fas fa-minus-square" ng-if="ldap.addMemberExpanded"></i> 
+					Add Member
+				</b>
+			</td>
+		</tr>
+		<tr ng-if="ldap.addMemberExpanded">
+			<td colspan="2">
+				<div
+					an-select class="form-control"
+					query="ldap.queryUsers"
+					resolve="ldap.resolve"
+					placeholder="'Select user to add ... '"
+					ng-model="ldap.membersAddId">
+				</div>
+			</td>
+			<td>
+				<button class="btn btn-primary float-right btn-sm" ng-disabled="ldap.mebersAddId.length < 6" ng-click="ldap.addMember(ldap.entry.id,ldap.membersAddId)">
+					<i class="fas fa-plus"></i>
+				</button>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="col-md-12" ng-if="ldap.entry.type == 'USER'"> 
+	<h4>Memberships</h4>
+	<table class="table table-compact">
+		<tr ng-if="ldap.memberships.length==0" colspan="3">
+			<td><i>No memberships</i></td>
+		</tr>
+		<tr ng-repeat="entry in ldap.memberships" ng-mouseover="entry.active = true" ng-mouseout="entry.active = false" ng-class="{'table-active' : entry.active}">
+			<td width="5%">
+				<i class="fa fa-user" ng-if="entry.type == 'USER'"></i>
+				<i class="fa fa-users" ng-if="entry.type == 'GROUP'"></i>
+				<i class="fa fa-folder-open" ng-if="entry.type == 'UNIT'"></i>
+			</td>
+			<td width="80%">
+				<b>{{entry.displayname}}</b><span ng-if="entry.type == 'USER'"> ({{entry.name}})</span><br>
+				<small>{{entry.hierarchy | join:' | '}}</small>
+			</td>
+			<td width="10%">
+				<button class="btn btn-sm btn-danger float-right" ng-click="ldap.removeMember(entry.id, ldap.entry.id)">
+					<i class="fas fa-minus"></i>
+				</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<b ng-click="ldap.addMembershipExpanded = !ldap.addMembershipExpanded">
+					<i class="fas fa-plus-square" ng-if="!ldap.addMembershipExpanded"></i> 
+					<i class="fas fa-minus-square" ng-if="ldap.addMembershipExpanded"></i> 
+					Add to Group
+				</b>
+			</td>
+		</tr>
+		<tr ng-if="ldap.addMembershipExpanded">
+			<td colspan="2">
+				<div
+					an-select
+					query="ldap.queryGroups"
+					resolve="ldap.resolve"
+					placeholder="'Select group to add ... '"
+					ng-model="ldap.mebershipsAddId">
+				</div>
+			</td>
+			<td>
+				<button class="btn btn-primary btn-sm float-right" ng-disabled="ldap.mebershipsAddId.length < 6" ng-click="ldap.addMember(ldap.mebershipsAddId,ldap.entry.id)">
+					<i class="fas fa-plus"></i> 
+ 				</button>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="col-md-12" ng-if="ldap.entry.type == 'UNIT'"> 
+	<h4>Child Entries</h4>
+	<input class="form-control" ng-model="ldap.childFilter" ng-change="ldap.updateChildren()" placeholder="type to filter" ng-if="ldap.children.length > 5 || ldap.childFilter.length > 0">
+	<table class="table table-compact">
+		<tr ng-if="ldap.children==0">
+			<td  colspan="3"><i>No child entries</i></td>
+		</tr>
+		<tr ng-repeat="entry in ldap.children" ng-click="ldap.open(entry.id)" ng-mouseover="entry.active = true" ng-mouseout="entry.active = false" ng-class="{'table-active' : entry.active}">
+			<td width="5%">
+				<i class="fa fa-user" ng-if="entry.type == 'USER'"></i>
+				<i class="fa fa-users" ng-if="entry.type == 'GROUP'"></i>
+				<i class="fa fa-folder-open" ng-if="entry.type == 'UNIT'"></i>
+			</td>
+			<td width="90%">
+				<b>{{entry.displayname}}</b><span ng-if="entry.type == 'USER'"> ({{entry.name}})</span><br>
+				<small>{{entry.hierarchy | join:' | '}}</small>
+			</td>
+			<td width="5%">
+				<span class="btn btn-sm btn-link">
+					<i class="fas fa-chevron-circle-right"></i>
+				</span>
+			</td>
+		</tr>
+		<tr ng-if="ldap.permissions && ldap.permissions.includes('CREATE')">
+			<td colspan="3">
+				<b ng-click="ldap.addChildExpanded = !ldap.addChildExpanded ">
+					<i class="fas fa-plus-square" ng-if="!ldap.addChildExpanded"></i> 
+					<i class="fas fa-minus-square" ng-if="ldap.addChildExpanded"></i> 
+					Create child entry
+				</b>
+			</td>
+		</tr>
+		<tr ng-if="ldap.addChildExpanded">
+			<td colspan="3">
+				<div class="row">
+					<div class="col-4">
+						<div class="form-group">
+							<label>Type</label>
+							<select ng-model="ldap.child.type" class="form-control" placeholder="please select" ng-change="ldap.checkCreate(ldap.child)">
+								<option value="USER">User</option>
+								<option value="GROUP">Group</option>
+								<option value="UNIT">Unit</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-8">
+						<div class="form-group">
+							<label>Name</label>
+							<input ng-model="ldap.child.name" class="form-control" ng-change="ldap.checkCreate(ldap.child)" ng-disabled="ldap.child.type == ''">
+						</div>
+					</div>
+				</div>
+				<div class="row" ng-if="ldap.child.type == 'USER'">
+					<div class="col-4">
+						&nbsp;
+					</div>
+					<div class="col-4">
+						<div class="form-group">
+							<label>Givenname</label>
+							<input ng-model="ldap.child.givenname" class="form-control" ng-change="ldap.updateDisplayName(ldap.child); ldap.checkCreate(ldap.child)">
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="form-group">
+							<label>Familyname</label>
+							<input ng-model="ldap.child.familyname" class="form-control" ng-change="ldap.updateDisplayName(ldap.child); ldap.checkCreate(ldap.child)">
+						</div>
+					</div>
+				</div>
+				<div class="row" ng-if="ldap.child.type == 'USER'">
+					<div class="col-4">
+						<div class="form-group">
+							<label>Email</label>
+							<input ng-model="ldap.child.email" class="form-control" ng-change="ldap.checkCreate(ldap.child)">
+						</div>
+					</div>
+					<div class="col-8">
+						<div class="form-group">
+							<label>Display Name</label>
+							<input ng-model="ldap.child.displayname" class="form-control" ng-change="ldap.checkCreate(ldap.child)">
+						</div>
+					</div>
+				</div>
+				<div class="row" ng-if="ldap.child.type == 'USER'">
+					<div class="col-4">
+						<div class="form-group">
+							<input type="checkbox" class="checkbox" ng-model="ldap.child.setPassword" ng-change="ldap.checkCreate(ldap.child)">  <label>Set Password</label>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="please enter a password" ng-if="ldap.child.setPassword" ng-model="ldap.child.pass1" ng-change="ldap.checkCreate(ldap.child)">
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="please confirm password" ng-if="ldap.child.setPassword" ng-model="ldap.child.pass2" ng-change="ldap.checkCreate(ldap.child)">
+						</div>
+					</div>
+				</div>
+				<div class="row" ng-if="ldap.createComplaints.length > 0">
+					<div class="col-12">
+						<div ng-repeat="complaint in ldap.createComplaints" class="alert alert-danger">{{complaint.code}}</div>
+					</div>
+				</div>
+				<div class="row" ng-if="ldap.createComplaints.length == 0">
+					<div class="col-12">
+						<div class="form-group">
+							<button class="btn btn-primary float-right" ng-click="ldap.createChild(ldap.child)">
+								<i class="fas fa-plus-circle"></i> Create 
+							</button>
+						</div>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+</div>
+<div class="col-md-12" ng-if="ldap.acls">
+	<h4>
+		ACLs
+	</h4>
+	<table class="table table-compact">
+		<tr ng-if="ldap.acls.length==0">
+			<td  colspan="3"><i>No ACLs</i></td>
+		</tr>
+		<tr ng-repeat="acl in ldap.acls" ng-mouseover="acl.active = true" ng-mouseout="acl.active = false" ng-class="{'table-active' : acl.active}">
+			<td width="60%">
+				<b>{{acl.principal.displayname}}</b><br>
+				<small>{{acl.principal.hierarchy | join:' | '}}</small>
+			</td>
+			<td width="20%">
+				<b>{{acl.permission}}</b>
+			</td>
+			<td width="10%">
+				<button class="btn btn-sm btn-danger float-right" ng-click="ldap.removeAcl(ldap.entry.id,acl.id)" ng-if="acl.entryId == ldap.entry.id">
+					<i class="fas fa-minus"></i>
+				</button>
+				<button class="btn btn-sm btn-secondary float-right" ng-click="ldap.open(acl.entryId)" ng-if="acl.entryId != ldap.entry.id">
+					<i class="fas fa-angle-double-up"></i>
+				</button>
+			</td>
+		</tr>
+		<tr ng-if="ldap.permissions.includes('ACL_WRITE')">
+			<td colspan="3">
+				<b ng-click="ldap.addAclExpanded = !ldap.addAclExpanded">
+					<i class="fas fa-plus-square" ng-if="!ldap.addAclExpanded"></i> 
+					<i class="fas fa-minus-square" ng-if="ldap.addAclExpanded"></i> 
+					Add ACL
+				</b>
+			</td>
+		</tr>
+		<tr ng-if="ldap.addAclExpanded">
+			<td width="60%">
+				<input type="hidden" ng-model="ldap.acl.recursive" value="true">
+				<div
+					an-select 
+					query="ldap.queryPrincipals"
+					resolve="ldap.resolve"
+					placeholder="'Select who gets access ... '"
+					ng-model="ldap.acl.principalId">
+				</div>
+			</td>
+			<td  width="30%">
+				<select ng-model="ldap.acl.permission" class="form-control" placeholder="What access">
+					<option value="READ">READ
+					<option value="WRITE">WRITE
+					<option value="CREATE">CREATE 
+					<option value="EDIT_MEMBERS">EDIT_MEMBERS
+					<option value="ADMIN">ADMIN				
+				</select>
+			</td>
+			<td  width="10%">
+				<button class="btn btn-primary btn-sm float-right" ng-disabled="ldap.mebershipsAddId.length < 6" ng-click="ldap.addAcl(ldap.entry.id,ldap.acl)">
+					<i class="fas fa-plus"></i> 
+				</button>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="col-md-12" ng-if="!ldap.entry.system && ldap.permissions.includes('ADMIN')">
+	<h4>
+		Danger Zone
+	</h4>
+	<div class="input-group">
+		<input class="form-control" placeholder="Enter object name to unlock" ng-disabled="ldap.dangerZoneUnlocked" ng-model="ldap.nameToUnlock">
+		<div class="input-group-append">
+			<button class="btn btn-primary">
+				<i class="fas fa-plus-square" ng-if="ldap.nameToUnlock == ldap.entry.displayname && !ldap.dangerZoneUnlocked" ng-click="ldap.dangerZoneUnlocked = true"></i> 
+				<i class="fas fa-minus-square" ng-if="ldap.nameToUnlock == ldap.entry.displayname && ldap.dangerZoneUnlocked" ng-click="ldap.dangerZoneUnlocked = false; ldap.nameToUnlock = '';"></i> 
+				<i class="fas fa-lock" ng-if="ldap.nameToUnlock != ldap.entry.displayname"></i>  
+			</button>
+		</div>
+	 </div>
+</div>
+<div class="col-md-12" ng-if="ldap.dangerZoneUnlocked">
+	RENAME <br>
+	DELETE <br>
+	... and other dangerous operations are hidden here.
+</div>
+<div class="col-md-12">
+	<!--  dome padding -->
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+</div>

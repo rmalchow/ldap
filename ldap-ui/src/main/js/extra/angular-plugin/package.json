@@ -1,0 +1,44 @@
+{
+  "dependencies": {
+    "angular": "1.6.1",
+    "angular-route": "1.6.1"
+  },
+  "description": "a few helper classes to make UIs more pluggable.",
+  "devDependencies": {
+    "gulp": "4*",
+    "gulp-angular-templatecache": "1.8.0",
+    "gulp-clean": "^0.2.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-jshint": "^1.12.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^0.2.1",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.5"
+  },
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-VlLOlGi3aaX4BHOK3qXRLmdce2xVVFN3SqrRV875MVEA8zvhKDM2G+ogsHkV9E+fUlLW2yCYjKkMiMrEg0S0yQ==",
+    "shasum": "b0648da6b2f52d02a03f8e0917d2cf9e219fe625",
+    "tarball": "https://registry.npmjs.org/angular-plugin/-/angular-plugin-0.0.26.tgz",
+    "fileCount": 12,
+    "unpackedSize": 15429
+  },
+  "gitHead": "ed26dd99372cda2ac7350e4e5e9f226f5f96dfa9",
+  "homepage": "https://github.com/rmalchow/angular-plugin#readme",
+  "license": "ISC",
+  "main": "gulpfile.js",
+  "maintainers": [
+    {
+      "name": "rmalchow",
+      "email": "ruben.malchow@gmail.com"
+    }
+  ],
+  "name": "angular-plugin",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmalchow/angular-plugin.git"
+  },
+  "version": "0.0.26"
+}

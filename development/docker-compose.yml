@@ -1,0 +1,11 @@
+version: "3"
+services:
+  mysql:
+    image: mariadb
+    restart: always
+    volumes:
+     - ${home}/data/mysql:/var/lib/mysql
+    env_file:
+     - ${home}/ldap-dev.env
+    ports:
+    - 2306:3306

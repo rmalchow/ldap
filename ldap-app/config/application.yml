@@ -1,0 +1,29 @@
+spring.mandatory-file-encoding: UTF-8
+spring.http.encoding.charset: UTF-8
+spring.http.encoding.enabled: true
+spring.http.encoding.force: true
+spring.resources.cache.period: 1
+
+spring.datasource.username: ${MYSQL_USER:ldap}
+spring.datasource.password: ${MYSQL_PASSWORD:s3cr3t}
+spring.datasource.url: jdbc:mariadb://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:2306}/${MYSQL_SCHEMA:ldap}
+
+flyway.enabled: true
+
+apacheds:
+   root: "${LDAP_DATA:/app/data}"
+   adminPassword: "${LDAP_ADMIN_PW:s3cr3t}"
+   partitions:
+      - name: "main"
+        dn: "${LDAP_ROOT_DN:dc=foo,dc=com}"
+        organization: "${LDAP_ORG:bar}"
+        units:
+        - "people"
+        - "groups"
+   listeners:
+      - type: plain
+        port: ${LDAP_PORT:389}
+ldap:
+   xyz: "nase"
+   registration:
+      enabled: true

@@ -1,0 +1,19 @@
+spring.mandatory-file-encoding: UTF-8
+spring.http.encoding.charset: UTF-8
+spring.http.encoding.enabled: true
+spring.http.encoding.force: true
+spring.resources.cache.period: 1
+
+apacheds:
+   root: ./server
+   adminPassword: "${LDAP_ADMIN_PW}"
+   partitions:
+      - name: "foo"
+        dn: "${LDAP_ROOT_DN:dc=foo,dc=com}"
+        organization: "${LDAP_ORG:bar}"
+        units:
+        - "people"
+        - "groups"
+   listeners:
+      - type: plain
+        port: 3389

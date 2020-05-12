@@ -1,0 +1,40 @@
+
+<div>
+	<div id="login-bg">
+		<img ng-src="doors/{{login.door.file}}" id="login-hero">
+	</div>
+	<div id="login-overlay">
+	</div>
+	<div id="login-info-bottom">
+		<b>{{login.door.author}}</b> <i>{{login.door.title}}</i> 
+		<a href="{{login.door.link}}" ng-if="login.door.link">
+			<i class="fas fa-external-link-square-alt"></i> 
+		</a>
+	</div>
+	<div id="login-row">
+		<div id="login-box">
+			<div class="col-md-12">
+				<form ng-submit="login.login()" >
+					<div class="form-group">
+						<B style="font-size: 1.5em">Login</b></h4>
+					</div>
+					<div class="form-group">
+						<input id="username" class="form-control" autofocus="true" ng-model="login.username" placeholder="Username" ng-change="login.check()" ng-submit="login.login()" ng-init="setFocus()">
+					</div>
+					<div class="form-group">
+						<input class="form-control" type="password"  placeholder="Password" ng-model="login.password" ng-change="login.check()" ng-submit="login.login()">
+					</div>
+					<div class="form-group clearfix">
+						<div class="alert alert-info" ng-if="login.status == -1">Please wait ... </div>
+						<div class="alert alert-danger" ng-if="login.status == -2">Login failed!</div>
+						<div class="alert alert-success" ng-if="login.status == -3">Login succeeded!</div>
+						<button class="btn btn-primary float-right" ng-disabled="login.status != 0" ng-click="login.login()">
+							Login
+							<i class="fas fa-sign-in-alt"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

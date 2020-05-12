@@ -1,0 +1,7 @@
+version: 1
+dn: cn=microsoft, ou=schema
+objectclass: metaSchema
+objectclass: top
+cn: microsoft
+m-disabled: FALSE
+m-dependencies: core

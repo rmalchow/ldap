@@ -1,0 +1,19 @@
+<div>
+	<table class="table table-compact table-hover mb-0">
+		<tr ng-repeat="r in results">
+			<td ng-click="select(r.id)">
+				<div>
+					<b>{{r.name || r.displayname}}</b> 
+				</div>	
+				<div ng-show="r.text">
+					{{r.text}}
+				</div>
+			</td>
+		</tr>
+		<tr ng-if="results.length==0">
+			<td>
+				<i>no results</i>
+			</td>
+		</tr>
+	</table>
+</div>

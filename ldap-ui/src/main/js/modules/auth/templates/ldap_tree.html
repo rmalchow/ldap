@@ -1,0 +1,38 @@
+<div>
+	<div>
+		<div ng-if="entries.length == 0">
+			<i>No children found</i>
+		</div>
+		<div ng-repeat="entry in entries">
+			<div style="padding: 5px">
+				<span ng-if="entry.type == 'UNIT'" ng-click="entry.expanded=!entry.expanded">
+					<i class="fas fa-plus-square" ng-if="!entry.expanded"></i> 
+					<i class="fas fa-minus-square" ng-if="entry.expanded"></i> 
+				</span>
+				<b ng-click="open(entry.id)" ng-if="entry.type=='USER'">
+					<i class="fas fa-user"></i> 
+					{{entry.displayname}}
+				</b>
+				<b ng-click="open(entry.id)" ng-if="entry.type=='GROUP'">
+					<i class="fas fa-users"></i> 
+					{{entry.displayname}}
+				</b>
+				<b ng-click="entry.expanded=!entry.expanded" ng-if="entry.type=='UNIT'">
+					<i class="fas fa-folder-open" ></i> 
+					{{entry.displayname}}
+				</b>
+				<span ng-if="admin" ng-click="ignore(entry)">
+					<i class="fas fa-eye" ng-if="!entry.ignored"></i>
+					<i class="fas fa-eye-slash" ng-if="entry.ignored"></i>
+				</span>
+				<a href="#/main/ldap/{{entry.id}}">
+					<i class="fas fa-chevron-right"></i>
+				</a>
+			</div>
+			<div style="padding-left: 15px;" ng-if="entry.expanded">
+				<div ldap-tree id="{{entry.id}}">
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
