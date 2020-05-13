@@ -17,7 +17,7 @@ build-jar:
   - sh scripts/build-maven.sh
   artifacts:
     paths:
-    - ldap-app.jar
+    - ldap-app/target/ldap-app.jar
     expire_in: 20 mins
     
 build-docker:
