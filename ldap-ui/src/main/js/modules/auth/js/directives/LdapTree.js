@@ -10,7 +10,10 @@ angular.module("rooster").directive(
 				
 		        scope.update = function() {
 	        		LdapService.list({parentId: attrs.id, permission: [ "READ" ], includeIgnored : true },
-		        			function(entries) { 
+		        			function(entries) {
+	        					_.each(entries,function(e) {
+	        						e.expanded = e.id == "00000000-0000-0000-0000-000000000000"
+	        					})
 		        				scope.entries = entries 
 		        			}
 		        		);

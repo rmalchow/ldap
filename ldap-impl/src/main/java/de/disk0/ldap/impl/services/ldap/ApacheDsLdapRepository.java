@@ -124,7 +124,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 		le.setPath(getPath(le.getId()));
 		
 		if(e.getDn().isRootDse()) {
-			le.setDisplayname("ROOT DSE");
+			le.setDisplayname("/");
 			le.setId(rootId);
 		}
 		

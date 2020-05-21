@@ -1,7 +1,10 @@
 <div>
 	<div>
 		<div ng-if="entries.length == 0">
-			<i>No children found</i>
+			<div style="padding: 5px">
+				<i class="fas fa-times"></i>
+				<i>No children found</i>
+			</div>
 		</div>
 		<div ng-repeat="entry in entries">
 			<div style="padding: 5px">
