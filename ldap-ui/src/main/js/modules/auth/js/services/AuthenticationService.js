@@ -18,15 +18,22 @@ angular.module("rooster").factory(
 					console.log("authentication service renew(): finished: ",u);
 					var c = JSON.stringify(u);
 					if(!u.id) {
-						if(!$location.path().startsWith("/login")) {
+						if($location.path().startsWith("/login")) {
+							// nope
+						} else if ($location.path().startsWith("/reset")) {
+							// nope
+						} else {
 							console.log("authentication service renew(): redirecting to /login");
 							$location.path("/login");
-						} else {
-							console.log("authentication service renew(): already on: "+$location.path());
 						}
 					} else {
 						console.log("authentication service renew(): user id: "+u.id, u);
-						if($location.path().startsWith("/login")) {
+						if(u.needsReset) {
+							$location.path("/reset");
+						} else if(
+								$location.path().startsWith("/login") ||
+								$location.path().startsWith("/reset")
+							) {
 							console.log("authentication service renew(): redirecting to /");
 							$location.path("/");
 						}
@@ -48,22 +55,38 @@ angular.module("rooster").factory(
 			console.log("authentication service renew()");
 		}
 		
-
+		s.updatePassword = function(password, success, error) {
+			Restangular.all("api/authenticate/update").customPOST({},"",{newPassword:password}).then(success,error);
+		};
+		
+		s.initiateReset = function(name, success, error) {
+			Restangular.all("api/authenticate/reset").customPOST({},"",{username:name}).then(success,error);
+		}
+		
 		s.login = function(username, password, success, error) {
 			Restangular.all("api/authenticate").customPOST({},"",{username:username, password:password}).then(
 					function(x) {
 						$timeout(s.renew,2000);
+						console.log("auth service: login: success ... ");
 						if(success) { success(x); }
 					},
 					function(x) {
 						$timeout(s.renew,2000);
+						console.log("auth service: login: error ... ");
 						if(error) { error(x); }
 					}
 			);
 		}
 
 		s.logout = function() {
-			Restangular.all("api/authenticate").customDELETE().then(s.renew,s.renew);
+			Restangular.all("api/authenticate").customDELETE().then(
+				function() {
+					$location.path("/login");
+				},
+				function() {
+					$location.path("/login");
+				}
+			);
 		}
 		
 		

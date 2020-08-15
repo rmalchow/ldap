@@ -17,7 +17,17 @@
 		</dependency>
 		<dependency>
 			<groupId>de.disk0.ldap</groupId>
+			<artifactId>ldap-mail-impl</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>de.disk0.ldap</groupId>
 			<artifactId>ldap-ui</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>de.disk0.ldap</groupId>
+			<artifactId>ldap-mail-impl</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

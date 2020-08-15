@@ -3,7 +3,9 @@ package de.disk0.ldap.impl.services;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -27,11 +29,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import de.disk0.dbutil.api.exceptions.SqlException;
 import de.disk0.ldap.api.entities.Complaint;
-import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.EntryAcl;
 import de.disk0.ldap.api.entities.EntryType;
+import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.LdapPermission;
 import de.disk0.ldap.api.entities.Membership;
+import de.disk0.ldap.api.entities.ResetToken;
 import de.disk0.ldap.api.entities.query.EntryQuery;
 import de.disk0.ldap.api.entities.session.SessionHolder;
 import de.disk0.ldap.api.entities.session.User;
@@ -47,6 +50,8 @@ import de.disk0.ldap.api.utils.PasswordGenerator;
 import de.disk0.ldap.impl.services.repos.EntryAclRepo;
 import de.disk0.ldap.impl.services.repos.EntryRepo;
 import de.disk0.ldap.impl.services.repos.MembershipRepo;
+import de.disk0.ldap.impl.services.repos.TokenRepo;
+import de.disk0.ldap.mail.api.MailService;
 
 
 @Service
@@ -66,6 +71,12 @@ public class LdapServiceImpl implements LdapService {
 	
 	@Autowired
 	private MembershipRepo membershipRepo;
+	
+	@Autowired
+	private TokenRepo tokenRepo;
+	
+	@Autowired
+	private MailService mailService;
 	
 	private LdapEntry root;
 	
@@ -351,6 +362,7 @@ public class LdapServiceImpl implements LdapService {
 
 	@Override
 	public User update(String id) throws AuthException {
+		
 		if(id == null) {
 			return new User();
 		}
@@ -369,6 +381,7 @@ public class LdapServiceImpl implements LdapService {
 				principalIds.add(ep.getId());
 				principalIds.addAll(Arrays.asList(ep.getPath().split("\\.")));
 			}
+			user.setNeedsReset(tokenRepo.hasToken(e.getId()));
 			log.info("user principals: "+principalIds);
 			user.setPrincipalIds(new ArrayList<String>(principalIds));
 			user.setAdmin(entryAclRepo.isAdmin(principalIds));
@@ -386,7 +399,7 @@ public class LdapServiceImpl implements LdapService {
 		
 		if(e == null) {
 			log.info("ldap service: authenticating: user is null!");
-			new NotAuthenticatedException();
+			throw new NotAuthenticatedException();
 		}
 		
 		try {
@@ -493,6 +506,33 @@ public class LdapServiceImpl implements LdapService {
 	}
 	
 	
-	
+	@Override
+	public void reset(String username) {
+		try {
+			LdapEntry le = ldapRepository.getByUsername(username);
+			if(le!=null) {
+				ResetToken token = tokenRepo.create(le.getId());
+				User u = update(le.getId());
+				Map<String,Object> params = new HashMap<String, Object>();
+				params.put("token", token.getToken());
+				params.put("user", u);
+				mailService.sendMail(le.getEmail(), "main.pwReset", null, params);
+			}
+		} catch (Exception e) {
+		}
+	}
 
+	@Override
+	public void updatePassword(String newPassword) throws NotAuthorizedException, SqlException, LdapException {
+		User u = SessionHolder.get();
+		if(u==null) {
+		} else if (tokenRepo.hasToken(u.getId())) {
+			ldapRepository.setPassword(u.getId(), newPassword);
+			tokenRepo.delete(u.getId());
+			return;
+		}
+		throw new NotAuthorizedException();
+		
+	}
+	
 }

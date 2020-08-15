@@ -15,6 +15,7 @@ public class AuthUtils {
 		User u = SessionHolder.get();
 		if(u==null) return false;
 		if(u.getId()==null) return false;
+		if(u.isNeedsReset()) return false;
 		return u.isLoggedIn();
 	}
 	

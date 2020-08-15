@@ -30,6 +30,10 @@ angular.module("rooster").controller(
 		}
 		
 		
+		login.reset = function() {
+			$location.path("/reset");
+		}
+		
 		login.login = function() {
 			login.status = -1;
 			AuthenticationService.login(login.username, login.password, 

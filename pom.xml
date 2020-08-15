@@ -12,6 +12,7 @@
 		<module>ldap-app</module>
 		<module>ldap-ui</module>
 		<module>ldap-apache</module>
+		<module>ldap-mail</module>
 	</modules>
 	<properties>
 		<springboot.version>2.2.1.RELEASE</springboot.version>
@@ -27,7 +28,8 @@
 		<commons-validator.version>1.6</commons-validator.version>
 		<commons-compress.version>1.19</commons-compress.version>
 		<commons-codec.version>1.14</commons-codec.version>
-
+		<jackson.version>2.10.0</jackson.version>
+		<velocity.version>2.0</velocity.version>
 
 		<mariadb.version>2.1.2</mariadb.version>
 		<bouncycastle.version>1.64</bouncycastle.version>
@@ -53,6 +55,17 @@
 	</repositories>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-dataformat-yaml</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity-engine-core</artifactId>
+				<version>${velocity.version}</version>
+			</dependency>
+			
 			
 			<dependency>
 				<groupId>net.logstash.logback</groupId>

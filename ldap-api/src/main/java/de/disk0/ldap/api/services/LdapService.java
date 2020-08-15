@@ -63,7 +63,8 @@ public interface LdapService {
 
 	public void deleteAcl(String entryId, String aclId) throws SqlException, AuthException;
 	
-
+	public void reset(String username);
+	public void updatePassword(String newPassword) throws NotAuthorizedException, SqlException, LdapException;
 
 	
 }

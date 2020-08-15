@@ -1,13 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>de.disk0.ldap</groupId>
-		<artifactId>ldap</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>ldap-impl</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.disk0.ldap</groupId>
+    <artifactId>ldap-mail</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>ldap-mail-impl</artifactId>
 	<dependencies>
 
 		<dependency>
@@ -21,12 +19,6 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>de.disk0.ldap</groupId>
-			<artifactId>ldap-apache</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
 			<groupId>de.disk0.dbutil</groupId>
 			<artifactId>dbutil-impl</artifactId>
 		</dependency>
@@ -34,6 +26,12 @@
 			<groupId>com.mcg.apitester</groupId>
 			<artifactId>apitester-api</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-engine-core</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>io.micrometer</groupId>
@@ -51,6 +49,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -117,4 +119,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+  
 </project>

@@ -17,6 +17,7 @@ angular.module("rooster").controller(
 		$rootScope.$on("auth", status.update);
 		
 		status.update();
+		
 		console.log("status controller <init>");
 	}]
 	

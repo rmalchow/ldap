@@ -15,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import de.disk0.ldap.api.entities.session.SessionHolder;
 import de.disk0.ldap.api.entities.session.User;
 import de.disk0.ldap.api.entities.session.UserTokenReader;
-import de.disk0.ldap.api.exceptions.NotAuthenticatedException;
 
 @Component
 public class SessionInterceptor implements WebMvcConfigurer, HandlerInterceptor {

@@ -16,6 +16,19 @@ angular.module("rooster").run(
 				};
 			PluginMenuService.addItem("","/login", loginForm);
 			
+			var loginForm = {
+					"order": 999, 
+					"title" : "reset",
+					"id" : "RESET",
+					"visible" :true, 
+					"active" :false,
+					"controller" : "ResetController",
+					"controllerAs" : "reset",
+					"templateUrl" : "/auth/templates/reset.html",
+					"reloadOnSearch" : false
+				};
+			PluginMenuService.addItem("","/reset", loginForm);
+			
 			console.log("main menu area ... ")
 			
 			var mainMenuArea = {

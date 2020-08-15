@@ -71,6 +71,8 @@ public class LdapEntry extends BaseGuidEntity {
 	@Column(name="system")
 	private boolean system = true;
 
+	private boolean needsReset = false;
+
 	public EntryType getType() {
 		return type;
 	}
@@ -235,6 +237,14 @@ public class LdapEntry extends BaseGuidEntity {
 	@Override
 	public String toString() {
 		return " { id="+getId()+", displayname="+getDescription()+", dn="+getDn()+"}";
+	}
+
+	public boolean isNeedsReset() {
+		return needsReset;
+	}
+
+	public void setNeedsReset(boolean needsReset) {
+		this.needsReset = needsReset;
 	}
 	
 	

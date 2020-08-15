@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "ldap.config")
 public class LdapConfig {
 
+	private String name;
+	
 	private String url;
 	
 	private String username;
@@ -56,7 +58,13 @@ public class LdapConfig {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 }

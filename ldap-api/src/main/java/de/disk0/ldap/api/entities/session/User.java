@@ -12,6 +12,7 @@ public class User {
 	private String displayname;
 	private String email;
 	private boolean admin = false;
+	private boolean needsReset = true;
 	private List<String> principalIds = new ArrayList<String>();
 	private String xsrf = TokenGenerator.generate(64);
 
@@ -82,6 +83,14 @@ public class User {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isNeedsReset() {
+		return needsReset;
+	}
+
+	public void setNeedsReset(boolean needsReset) {
+		this.needsReset = needsReset;
 	}
 	
 	

@@ -4,11 +4,9 @@ spring.datasource.url: jdbc:mariadb://${MYSQL_HOST:127.0.0.1}:2306/${MYSQL_SCHEM
 
 server.port: 8081
 
+ldap.config.name: ${LDAP_NAME:test ldap (local)}
 ldap.config.url: ${LDAP_URL:ldap://127.0.0.1:2389}
 ldap.config.type: ${LDAP_TYPE:ds389}
 ldap.config.rootDn: ${LDAP_BASE:dc=foobar.com}
 ldap.config.username: ${LDAP_USER:cn=Directory Manager}
 ldap.config.password: ${LDAP_PASS:ateeM3Ohdeeshee4Ua6Aigairab3Muab4uel}
-
-
-

@@ -38,6 +38,7 @@ import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.exceptions.AuthException;
 import de.disk0.ldap.api.exceptions.LdapException;
 import de.disk0.ldap.api.services.LdapRepository;
+import de.disk0.ldap.impl.services.repos.TokenRepo;
 
 @Component
 public class ApacheDsLdapRepository implements LdapRepository {
@@ -46,6 +47,9 @@ public class ApacheDsLdapRepository implements LdapRepository {
 
 	@Autowired
 	private ApacheDsEmbedded embeddedADS;
+	
+	@Autowired
+	private TokenRepo tokenRepo;
 	
 	public static final String rootId = "00000000-0000-0000-0000-000000000000"; 
 
@@ -114,7 +118,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 		le.setParentId(getAttribute(e, "entryParentId"));
 		
 		le.setDn(e.getDn().getName());
-		le.setDisplayname(getAttribute(e, "displayname", "cn", "userPrincipalName",  "uid", "ou", "o", "dc"));
+		le.setDisplayname(getAttribute(e, "displayname", "cn", "userPrincipalName",  "uid", "ou", "o", "dc", "prefNodeName"));
 		le.setDescription(getAttribute(e, "description"));
 		le.setName(getAttribute(e, "userPrincipalName","uid", "cn", "mail", "ou", "dc"));
 		le.setEmail(getAttribute(e, "mail"));
@@ -372,6 +376,14 @@ public class ApacheDsLdapRepository implements LdapRepository {
 	public LdapEntry authenticate(String username, String password) throws LdapException, AuthException {
 		try {
 			LdapEntry le = getByUsername(username); 
+			if(le!=null && tokenRepo.hasToken(le.getId())) {
+				if(tokenRepo.verify(le.getId(), password)) {
+					le.setNeedsReset(true);
+					return le;
+				}
+				return null;
+			}
+			
 			Entry e = embeddedADS.getAdminSession().lookup(new Dn(le.getDn()),atts);
 			CoreSession s = embeddedADS.getAdminSession().getDirectoryService().getSession(e.getDn(),password.getBytes("utf-8"));
 			LdapEntry lea = mapFromLdap(s.lookup(new Dn(le.getDn()),atts));

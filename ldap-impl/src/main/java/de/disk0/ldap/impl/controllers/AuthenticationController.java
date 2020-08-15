@@ -11,6 +11,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mcg.apitester.api.annotations.ApiSecret;
 
+import de.disk0.dbutil.api.exceptions.SqlException;
 import de.disk0.ldap.api.entities.session.SessionHolder;
 import de.disk0.ldap.api.entities.session.User;
 import de.disk0.ldap.api.entities.session.UserTokenWriter;
+import de.disk0.ldap.api.exceptions.LdapException;
+import de.disk0.ldap.api.exceptions.NotAuthorizedException;
 import de.disk0.ldap.api.services.LdapService;
 import io.micrometer.core.instrument.util.StringUtils;
 
@@ -71,6 +75,23 @@ public class AuthenticationController {
 		ldapService.setPassword(SessionHolder.get().getId(), oldPassword, newPassword);
 	}
 
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@PostMapping(value = "/reset")
+	public void reset(
+			@RequestParam(required = false) String username
+			) {
+		ldapService.reset(username);
+	}
+
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@PostMapping(value = "/update")
+	public void updatePassword(
+			@RequestParam(required = false) String newPassword
+			) throws NotAuthorizedException, SqlException, LdapException {
+		ldapService.updatePassword(newPassword);
+	}
+
+	
 	@PostMapping
 	public User authenticate(
 			@RequestParam(required = false) String username, 

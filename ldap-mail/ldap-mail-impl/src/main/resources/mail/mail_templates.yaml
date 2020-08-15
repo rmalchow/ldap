@@ -1,0 +1,70 @@
+- id: "main.pwReset"
+  subject: "[$config.name] password reset"
+  text: |
+     
+     hello $user.displayname!
+     
+     you have requested a password reset, so we have created 
+     a temporary password for you:
+     
+        $token
+        
+     with this token, you can reset your password at:
+     
+        $config.url
+        
+     this token will expire soon.
+        
+     --------------------
+     $config.name
+     $config.url
+  params:
+     "config.name" : "foobar"
+- id: "main.newAccount"
+  subject: "[$config.name] your account"
+  text: |
+     
+     hello $user.displayname!
+     
+     $actor.displayname has created an account for you.
+     to activate it, please go to:
+     
+        $config.url
+        
+     and log in with your credentials:
+     
+        $user.name
+        $token
+        
+     and update your password.
+     --------------------
+     $config.name
+     $config.url
+  params:
+     "config.name" : "foobar"
+- id: "main.newAccount"
+  subject: "[$config.name] your account"
+  text: |
+     
+     hello $user.displayname!
+     
+     $actor.displayname has reset your password.
+     to reactivate your account, please go to:
+     
+        $config.url
+        
+     and log in with your temporary password:
+     
+        $user.name
+        $token
+     
+     and update your password.
+     --------------------
+     $config.name
+     $config.url
+  params:
+     "config.name" : "foobar"
+     
+     
+      
+  
