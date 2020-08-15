@@ -2,8 +2,10 @@ package de.disk0.ldap.mail.impl.services;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -21,7 +23,11 @@ import org.apache.velocity.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import de.disk0.ldap.api.entities.LdapConfig;
 import de.disk0.ldap.mail.api.MailService;
@@ -100,7 +106,25 @@ public class MailServiceImpl implements MailService {
 			
 			mm.setContent(mmp);
 			
+			log.info("sending message .... ");
+			try {
+				for(Field f : JavaMailSenderImpl.class.getDeclaredFields()) {
+					if(f.getName().contentEquals("javaMailProperties")) {
+						f.setAccessible(true);
+						Properties p = (Properties) f.get(javaMailSender);
+						log.info(new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(p));
+					}
+					log.info(f.getName());
+				}
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			javaMailSender.send(mm);
+
+			log.info("sending message .... done!");
 			
 			return true;
 			

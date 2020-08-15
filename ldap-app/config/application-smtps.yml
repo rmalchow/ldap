@@ -1,0 +1,2 @@
+spring.mail.properties.mail.smtp.socketFactory.port: 465
+spring.mail.properties.mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
