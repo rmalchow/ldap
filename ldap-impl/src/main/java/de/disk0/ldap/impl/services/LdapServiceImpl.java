@@ -343,7 +343,23 @@ public class LdapServiceImpl implements LdapService {
 		LdapEntry e = getWithPermission(entry, LdapPermission.WRITE);
 		LdapEntry p = getWithPermission(toParent, LdapPermission.CREATE);
 		LdapEntry le = ldapRepository.move(e.getId(), p.getId());
-		updateInternal();
+		
+		if(p.getPath().startsWith(e.getPath())) {
+			throw new RuntimeException();
+		}
+		
+		String r = this.root.getId();
+		
+		for(int i=0; i < Math.min(e.getAncestors().size(), p.getAncestors().size());i++) {
+			if(e.getAncestors().get(i)[1].equals(p.getAncestors().get(i)[1])) {
+				r = e.getAncestors().get(i)[1];
+			} else {
+				break;
+			}
+		}
+		
+		LdapEntry common = ldapRepository.getById(r);
+		recursive(common);
 		return le;
 	}
 

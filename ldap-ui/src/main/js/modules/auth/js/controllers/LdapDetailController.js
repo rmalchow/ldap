@@ -19,6 +19,8 @@ angular.module("rooster").controller(
 			state : 1
 		};
 		
+		ldap.waitForMove = false;
+		
 		ldap.moveEntry = function() {
 			console.log("entry .... ",ldap.entry);
 			if(!ldap.entry.newParentId) {
@@ -30,8 +32,20 @@ angular.module("rooster").controller(
 				console.log("no change: ignoring .... ");
 				return;				
 			}
+			ldap.waitForMove = true;
 			console.log("move "+ldap.entry.entryId+" to: "+ldap.entry.newParentId);
-			LdapService.moveTo(ldap.entry.id, ldap.entry.newParentId, ldap.update);
+			LdapService.moveTo(
+				ldap.entry.id, ldap.entry.newParentId, 
+				function() {
+					ldap.waitForMove = false;
+					ldap.update();
+				}, 
+				function() {
+					ldap.entry.newParentId = ldap.entry.parentId;
+					ldap.waitForMove = false;
+					ldap.update();
+				}, 
+			);
 		}
 		
 		ldap.update = function() {

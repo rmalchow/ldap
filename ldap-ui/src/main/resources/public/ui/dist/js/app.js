@@ -202,6 +202,48 @@ angular.module("rooster").run(
 
 );
 
+angular.module("rooster").directive(
+	"ldapTree",
+	['Restangular','LdapService','AuthenticationService','$location',
+	function(Restangular,LdapService,AuthenticationService, $location) {
+		return {
+	        restrict: 'A',
+			templateUrl : "/auth/templates/ldap_tree.html",
+			scope : {},
+			link : function(scope, element, attrs, ctrl) {
+				
+		        scope.update = function() {
+	        		LdapService.list({parentId: attrs.id, permission: [ "READ" ], includeIgnored : true },
+		        			function(entries) {
+	        					_.each(entries,function(e) {
+	        						e.expanded = e.id == "00000000-0000-0000-0000-000000000000"
+	        					})
+		        				scope.entries = entries 
+		        			}
+		        		);
+	        		LdapService.getPermissions(attrs.id,
+		        			function(permissions) { 
+		        				scope.permissions = permissions;
+		        				scope.admin = AuthenticationService.user.admin; 
+		        			}
+		        		);
+		        }
+		        
+				scope.open = function(id) {
+					$location.path("/main/ldap/"+id);
+				}
+
+		        scope.ignore = function(entry) {
+		        	console.log("ignore: ",entry)
+		        	LdapService.ignore(entry.id,!entry.ignored,scope.update);
+		        }
+		        
+		        scope.update();
+
+			}
+		};
+	}]
+);
 angular.module("rooster").controller(
 	"LdapDetailController", 
 	[ '$timeout', '$rootScope', '$location', '$routeParams', 'LdapService', 'AuthenticationService',  function($timeout,$rootScope,$location,$routeParams, LdapService, AuthenticationService) {
@@ -223,6 +265,8 @@ angular.module("rooster").controller(
 			state : 1
 		};
 		
+		ldap.waitForMove = false;
+		
 		ldap.moveEntry = function() {
 			console.log("entry .... ",ldap.entry);
 			if(!ldap.entry.newParentId) {
@@ -234,8 +278,20 @@ angular.module("rooster").controller(
 				console.log("no change: ignoring .... ");
 				return;				
 			}
+			ldap.waitForMove = true;
 			console.log("move "+ldap.entry.entryId+" to: "+ldap.entry.newParentId);
-			LdapService.moveTo(ldap.entry.id, ldap.entry.newParentId, ldap.update);
+			LdapService.moveTo(
+				ldap.entry.id, ldap.entry.newParentId, 
+				function() {
+					ldap.waitForMove = false;
+					ldap.update();
+				}, 
+				function() {
+					ldap.entry.newParentId = ldap.entry.parentId;
+					ldap.waitForMove = false;
+					ldap.update();
+				}, 
+			);
 		}
 		
 		ldap.update = function() {
@@ -875,48 +931,6 @@ angular.module("rooster").controller(
 	
 );
 
-angular.module("rooster").directive(
-	"ldapTree",
-	['Restangular','LdapService','AuthenticationService','$location',
-	function(Restangular,LdapService,AuthenticationService, $location) {
-		return {
-	        restrict: 'A',
-			templateUrl : "/auth/templates/ldap_tree.html",
-			scope : {},
-			link : function(scope, element, attrs, ctrl) {
-				
-		        scope.update = function() {
-	        		LdapService.list({parentId: attrs.id, permission: [ "READ" ], includeIgnored : true },
-		        			function(entries) {
-	        					_.each(entries,function(e) {
-	        						e.expanded = e.id == "00000000-0000-0000-0000-000000000000"
-	        					})
-		        				scope.entries = entries 
-		        			}
-		        		);
-	        		LdapService.getPermissions(attrs.id,
-		        			function(permissions) { 
-		        				scope.permissions = permissions;
-		        				scope.admin = AuthenticationService.user.admin; 
-		        			}
-		        		);
-		        }
-		        
-				scope.open = function(id) {
-					$location.path("/main/ldap/"+id);
-				}
-
-		        scope.ignore = function(entry) {
-		        	console.log("ignore: ",entry)
-		        	LdapService.ignore(entry.id,!entry.ignored,scope.update);
-		        }
-		        
-		        scope.update();
-
-			}
-		};
-	}]
-);
 angular.module("rooster").factory(
 	"AuthenticationService", 
 	[ '$interval', '$timeout', '$location', 'Restangular', '$rootScope', function($interval,$timeout,$location,Restangular,$rootScope) {
@@ -1100,7 +1114,7 @@ angular.module("rooster").factory(
 			);
 		}
 
-		s.moveTo = function(entryId,newParentId,success) {
+		s.moveTo = function(entryId,newParentId,success,error) {
 			console.log("[service] move "+entryId+" to: "+newParentId);
 			Restangular.one("api/ldap/entries",entryId).one("move").customPOST({},"",{newParentId:newParentId}).then(
 				function(x) {

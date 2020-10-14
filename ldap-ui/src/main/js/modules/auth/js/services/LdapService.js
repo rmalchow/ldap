@@ -71,7 +71,7 @@ angular.module("rooster").factory(
 			);
 		}
 
-		s.moveTo = function(entryId,newParentId,success) {
+		s.moveTo = function(entryId,newParentId,success,error) {
 			console.log("[service] move "+entryId+" to: "+newParentId);
 			Restangular.one("api/ldap/entries",entryId).one("move").customPOST({},"",{newParentId:newParentId}).then(
 				function(x) {
