@@ -83,6 +83,12 @@ public class LdapController {
 		ldapService.setEnabled(id, enabled);
 	}
 	
+	@ResponseStatus(value = org.springframework.http.HttpStatus.NO_CONTENT)
+	@PostMapping(value = "/{id}/move")
+	public void move(@PathVariable String id, @RequestParam String newParentId)  throws Exception {
+		ldapService.move(id,newParentId);
+	}
+	
 	@PutMapping(value = "/{id}/create")
 	public List<Complaint> checkCreate(
 			@PathVariable String id,

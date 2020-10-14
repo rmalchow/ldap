@@ -350,8 +350,16 @@ public class ApacheDsLdapRepository implements LdapRepository {
 	}
 
 	@Override
-	public LdapEntry move(String id, String newParent) throws LdapException {
-		return null;
+	public LdapEntry move(String id, String newParent) throws Exception {
+		
+		log.info("moving entry [entry: "+id+", new parent: "+newParent+"]");
+		
+		Entry e = getEntryById(id);
+		Entry p = getEntryById(newParent);
+		
+		embeddedADS.getAdminSession().move(e.getDn(), p.getDn(), true);
+		
+		return getById(id);
 	}
 
 	@Override

@@ -1,2 +1,15 @@
 #server.port: 8081
 
+apacheds:
+   root: "${LDAP_DATA:./app/data}"
+   adminPassword: "${LDAP_ADMIN_PW:admin}"
+   partitions:
+      - name: "main"
+        dn: "${LDAP_ROOT_DN:dc=foo,dc=com}"
+        organization: "${LDAP_ORG:bar}"
+        units:
+        - "people"
+        - "groups"
+   listeners:
+      - type: plain
+        port: ${LDAP_PORT:1389}

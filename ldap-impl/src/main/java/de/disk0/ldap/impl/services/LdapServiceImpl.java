@@ -338,9 +338,13 @@ public class LdapServiceImpl implements LdapService {
 		}
 	}
 
-	public LdapEntry move(String entry, String toParent) throws LdapException, AuthException {
-		// TODO Auto-generated method stub
-		return null;
+	public LdapEntry move(String entry, String toParent) throws Exception {
+		AuthUtils.checkLoggedIn();
+		LdapEntry e = getWithPermission(entry, LdapPermission.WRITE);
+		LdapEntry p = getWithPermission(toParent, LdapPermission.CREATE);
+		LdapEntry le = ldapRepository.move(e.getId(), p.getId());
+		updateInternal();
+		return le;
 	}
 
 	public void setPassword(String id, String oldPassword, String newPassword) throws LdapException, AuthException {

@@ -12,27 +12,6 @@
 		</span>
 	</span> 	
 </div>
-<div class="col-md-4 hidden-sm  hidden-xs">
-	<span
-		ng-if="ldap.entry.type == 'USER'"
-		an-select class="form-control"
-		query="ldap.queryUsers"
-		resolve="ldap.resolve"
-		ng-model="ldap.choseOtherId"
-		placeholder="'Jump to user ... '"
-		ng-change="ldap.open(ldap.choseOtherId)">
-	</span>
-	<span
-		ng-if="ldap.entry.type == 'GROUP'"
-		an-select class="form-control"
-		query="ldap.queryGroups"
-		resolve="ldap.resolve"
-		ng-model="ldap.choseOtherId"
-		placeholder="'Jump to group ... '"
-		ng-change="ldap.open(ldap.choseOtherId)">
-	</span>
-</div>
-
 <div class="col-md-12">
 	<div class="float-right">
 		&nbsp;<br>
@@ -51,16 +30,30 @@
 </div>
 <div class="col-md-5"> 
 	<div class="form-group">
-		<b>Full DN</b><br>
-		{{ldap.entry.dn}}
+		<b>Name</b><br>
+		{{ldap.entry.name || "[no UID]"}}
+		<i class="glyphicon glyphicon-pencil"></i>
 	</div>
 </div>
-<div class="col-md-4">
+<div class="col-md-7"> 
 	<div class="form-group">
-		<b>ID</b><br>
-		{{ldap.entry.id}}
+		<b>Path</b><br>
+		<div  ng-if="!ldap.edit">
+			{{ldap.entry.dn}}
+		</div>
+		<div ng-if="ldap.edit">
+			<div
+				an-select class="form-control"
+				query="ldap.queryMoveTo"
+				resolve="ldap.resolve"
+				placeholder="'move to ... '"
+				ng-model="ldap.entry.newParentId"
+				ng-change="ldap.moveEntry">
+			</div>
+		</div>
 	</div>
 </div>
+<!-- 
 <div class="col-md-3"  ng-if="ldap.entry.type == 'USER'"> 
 	<div class="form-group">
 		<b>Status</b><br>
@@ -72,14 +65,8 @@
 		</button>
 	</div>
 </div>
+ -->
 
-<div class="col-md-12"> 
-	<div class="form-group">
-		<b>Name</b><br>
-		{{ldap.entry.name || "[no UID]"}}
-		<i class="glyphicon glyphicon-pencil"></i>
-	</div>
-</div>
 <div class="col-md-2" ng-if="ldap.entry.type == 'USER'"> 
 	<div class="form-group">
 		<b>Givenname</b><br>
@@ -140,7 +127,7 @@
 			<div class="form-group">
 				<div class="input-group">
 					<input ng-if="!ldap.setpw.visiblePw" type="password" ng-model="ldap.setpw.pw1" class="form-control" placeholder="Enter password (8 chars min)" ng-change="ldap.checkPassword(ldap.setpw)">
-					<input ng-if="ldap.setpw.visiblePw" ng-model="ldap.setpw.pw1" class="form-control" placeholder="Enter password (8 chars min)" ng-change="ldap.checkPassword(ldap.setpw)">
+					<input ng-if="ldap.setpw.visiblePw" ng-model="ldap.setpw.pw1" class="form-control" placeholder="Enter new password (8 chars min)" ng-change="ldap.checkPassword(ldap.setpw)">
 				</div>
 			</div>
 			<div class="form-group" ng-if="ldap.setpw.pw1.length > 0">

@@ -71,6 +71,20 @@ angular.module("rooster").factory(
 			);
 		}
 
+		s.moveTo = function(entryId,newParentId,success) {
+			console.log("[service] move "+entryId+" to: "+newParentId);
+			Restangular.one("api/ldap/entries",entryId).one("move").customPOST({},"",{newParentId:newParentId}).then(
+				function(x) {
+					console.log("ldap service check create: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service check create: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+
 		s.save = function(id,entry,success,error) {
 			Restangular.one("api/ldap/entries",id).customPUT(entry).then(
 				function(x) {

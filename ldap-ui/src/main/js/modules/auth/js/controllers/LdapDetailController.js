@@ -19,6 +19,21 @@ angular.module("rooster").controller(
 			state : 1
 		};
 		
+		ldap.moveEntry = function() {
+			console.log("entry .... ",ldap.entry);
+			if(!ldap.entry.newParentId) {
+				console.log("no new parent: going back .... ");
+				ldap.entry.newParentId = ldap.entry.parentId;
+				return;				
+			}
+			if(ldap.entry.newParentId == ldap.entry.parentId) {
+				console.log("no change: ignoring .... ");
+				return;				
+			}
+			console.log("move "+ldap.entry.entryId+" to: "+ldap.entry.newParentId);
+			LdapService.moveTo(ldap.entry.id, ldap.entry.newParentId, ldap.update);
+		}
+		
 		ldap.update = function() {
 			console.log("ldap user list controller: update()");
 			ldap.entries = undefined;
@@ -26,6 +41,7 @@ angular.module("rooster").controller(
 			LdapService.get( 
 				ldap.id,
 				function(e) {
+					e.newParentId = e.parentId;
 					ldap.updateChildrenInternal();
 					LdapService.getMembers(ldap.id, function(members) { ldap.members = members; });
 					LdapService.getMemberships(ldap.id, function(memberships) { ldap.memberships = memberships; });
@@ -273,6 +289,8 @@ angular.module("rooster").controller(
 		ldap.enableUser = function(id,enabled) { LdapService.enableUser(id,enabled,ldap.update);}
 		
 		ldap.resolve = LdapService.resolve();
+
+		ldap.queryMoveTo = LdapService.query(["UNIT"],["CREATE"]);
 		
 		ldap.queryUsers = LdapService.query(["USER"],["READ"]);
 		

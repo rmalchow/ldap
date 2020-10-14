@@ -7,9 +7,9 @@ import javax.naming.NamingException;
 
 import de.disk0.dbutil.api.exceptions.SqlException;
 import de.disk0.ldap.api.entities.Complaint;
-import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.EntryAcl;
 import de.disk0.ldap.api.entities.EntryType;
+import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.LdapPermission;
 import de.disk0.ldap.api.entities.query.EntryQuery;
 import de.disk0.ldap.api.entities.session.User;
@@ -26,7 +26,7 @@ public interface LdapService {
 	public LdapEntry save(LdapEntry e) throws LdapException, AuthException, SqlException, InvalidNameException;
 	public void delete(LdapEntry e) throws LdapException, AuthException;
 
-	public LdapEntry move(String entry, String toParent) throws LdapException, AuthException;
+	public LdapEntry move(String entry, String toParent) throws Exception;
 
 	public void setPassword(String id, String oldPassword, String newPassword) throws LdapException, AuthException;
 	

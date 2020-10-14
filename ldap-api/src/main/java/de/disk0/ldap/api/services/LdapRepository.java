@@ -21,7 +21,7 @@ public interface LdapRepository {
 
 	public LdapEntry save(LdapEntry e) throws LdapException;
 	public void delete(String id) throws LdapException;
-	public LdapEntry move(String id, String newParent) throws LdapException;
+	public LdapEntry move(String id, String newParent) throws LdapException, Exception;
 
 	public void setPassword(String id, String password) throws LdapException;
 	
