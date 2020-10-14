@@ -30,13 +30,6 @@
 </div>
 <div class="col-md-5"> 
 	<div class="form-group">
-		<b>Name</b><br>
-		{{ldap.entry.name || "[no UID]"}}
-		<i class="glyphicon glyphicon-pencil"></i>
-	</div>
-</div>
-<div class="col-md-7"> 
-	<div class="form-group">
 		<b>Path</b><br>
 		<div  ng-if="!ldap.edit">
 			{{ldap.entry.dn}}
@@ -58,6 +51,20 @@
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+<div class="col-md-7" ng-if="ldap.entry.type == 'USER'"> 
+	<div class="form-group">
+		<b>Username</b><br>
+		{{ldap.entry.name || "[no UID]"}}
+		<i class="glyphicon glyphicon-pencil"></i>
+	</div>
+</div>
+<div class="col-md-7" ng-if="ldap.entry.type == 'GROUP'"> 
+	<div class="form-group">
+		<b>Group Name</b><br>
+		{{ldap.entry.name || "[no UID]"}}
+		<i class="glyphicon glyphicon-pencil"></i>
 	</div>
 </div>
 <!-- 
