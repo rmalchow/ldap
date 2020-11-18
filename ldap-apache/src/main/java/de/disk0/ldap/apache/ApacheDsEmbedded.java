@@ -1,14 +1,10 @@
 package de.disk0.ldap.apache;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.annotation.PostConstruct;
 
@@ -27,7 +23,6 @@ import org.apache.directory.api.ldap.model.schema.SchemaManager;
 import org.apache.directory.api.ldap.schema.extractor.SchemaLdifExtractor;
 import org.apache.directory.api.ldap.schema.loader.LdifSchemaLoader;
 import org.apache.directory.api.ldap.schema.manager.impl.DefaultSchemaManager;
-import org.apache.directory.api.util.IOUtils;
 import org.apache.directory.api.util.exception.Exceptions;
 import org.apache.directory.server.constants.ServerDNConstants;
 import org.apache.directory.server.core.DefaultDirectoryService;
@@ -49,16 +44,17 @@ import org.apache.directory.server.ldap.LdapServer;
 import org.apache.directory.server.protocol.shared.transport.TcpTransport;
 import org.apache.directory.server.xdbm.Index;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import de.disk0.ldap.apache.config.ApacheDsConfig;
 import de.disk0.ldap.apache.config.ApacheDsListenerConfig;
 import de.disk0.ldap.apache.config.ApacheDsPartitionConfig;
+import de.disk0.ldap.apache.interceptors.ApacheDsBindInterceptor;
 import de.disk0.ldap.apache.interceptors.ApacheDsMemberOfInterceptor;
 import de.disk0.ldap.apache.utils.CustomSchemaLdifExtractor;
 import de.disk0.ldap.apache.utils.LdapUtil;
@@ -68,6 +64,9 @@ public class ApacheDsEmbedded {
 
 	private static Log log = LogFactory.getLog(ApacheDsEmbedded.class);
 
+	@Value(value = "${ldap.config.allowAnonymous:false}")
+	boolean allowAnonymous = false;
+	
 	@Autowired
 	private ApacheDsConfig config;
 
@@ -163,6 +162,7 @@ public class ApacheDsEmbedded {
 		File workDir = new File(config.getRoot()).getAbsoluteFile();
 
 		service = new DefaultDirectoryService();
+		service.setAllowAnonymousAccess(allowAnonymous);
 		service.setInstanceId("ADS");
 		service.setInstanceLayout(new InstanceLayout(workDir));
 
@@ -191,13 +191,17 @@ public class ApacheDsEmbedded {
 			partitions.add(adp);
 		}
 
+		
+		
+		service.addFirst(new ApacheDsBindInterceptor(this));
+		
 		service.addLast(new ApacheDsMemberOfInterceptor(this));
 
 		PasswordHashingInterceptor phi = new Ssha256PasswordHashingInterceptor() {
 
 			@Override
 			public void add(AddOperationContext addContext) throws LdapException {
-				super.add(addContext);
+				super.add(addContext);	
 			}
 			
 			@Override

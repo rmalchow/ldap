@@ -19,6 +19,7 @@ spring.mail.properties.mail.smtp.starttls.enable: true
 
 ldap.config.name: ${NAME:test ldap (local)}
 ldap.config.url: ${URL:http://127.0.0.1:8080}
+ldap.config.allowAnonymous: ${LDAP_ALLOW_ANONYMOUS:false}
 
 flyway.enabled: true
 

@@ -15,9 +15,8 @@ public class ApacheDsBindInterceptor extends BaseInterceptor {
 	private ApacheDsEmbedded ds;
 	private String name;
 	
-	public ApacheDsBindInterceptor(ApacheDsEmbedded ds, String name) {
+	public ApacheDsBindInterceptor(ApacheDsEmbedded ds) {
 		this.ds = ds;
-		this.name = name;
 	}
 	
 	@Override
@@ -43,6 +42,12 @@ public class ApacheDsBindInterceptor extends BaseInterceptor {
 		} catch (Exception e) {
 		}
 		**/
+		byte[] creds = bindContext.getCredentials(); 
+		if(creds == null || creds.length==0) {
+			// try anonymous
+			
+		}
+		
 		log.error(" >>>> "+name);
 		next(bindContext);
 		log.error(" <<<< "+name);
