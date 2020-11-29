@@ -18,6 +18,11 @@ waitForMysql() {
 	done
 }
 
+if [ -z "${JAVA_OPTS}" ]; then 
+	JAVA_OPTS=${JAVA_OPTS:--Djava.security.egd=file:/dev/urandom}
+fi
+
+
 
 for i in MYSQL_HOST MYSQL_PORT LDAP_ADMIN_PW; do
 	if [ ! -v ${i} ]; then
