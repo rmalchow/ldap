@@ -261,6 +261,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 			if(e.getType() == EntryType.GROUP) {
 				log.info("apache repo: create: group: "+ee.getDn().toString());
 				ee.add(new DefaultAttribute("objectClass","groupOfNames"));
+				ee.add(new DefaultAttribute("objectClass","groupOfUniqueNames"));
 				ee.add(new DefaultAttribute("cn",e.getName()));
 				ar.setEntry(ee);
 				ar.setEntryDn(new Dn(new Rdn("cn",e.getName()),parent.getDn()));
@@ -331,6 +332,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 				out.addAll(setAttribute(ee, "displayname", e.getDisplayname()));
 				out.addAll(setAttribute(ee, "sn", e.getFamilyname()));
 				out.addAll(setAttribute(ee, "givenname", e.getGivenname()));
+			} else if(e.getType()==EntryType.GROUP) {
 			}
 
 			for(Modification m : out) {
