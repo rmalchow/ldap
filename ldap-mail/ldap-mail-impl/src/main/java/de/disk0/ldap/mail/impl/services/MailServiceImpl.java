@@ -95,7 +95,7 @@ public class MailServiceImpl implements MailService {
 			log.info("sending email: { template: "+id+", sender: "+sender+", recipient: "+recipient+"} ");
 			
 			mm.setSender(new InternetAddress(sender));
-			mm.setFrom(new InternetAddress(recipient));
+			mm.setFrom(new InternetAddress(sender));
 			mm.setRecipient(RecipientType.TO, new InternetAddress(recipient));
 			mm.setSubject(m.getSubject(), "utf-8");
 			
