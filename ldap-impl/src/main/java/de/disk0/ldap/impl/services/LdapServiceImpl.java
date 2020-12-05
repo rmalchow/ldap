@@ -113,7 +113,7 @@ public class LdapServiceImpl implements LdapService {
 	}
 	
 	
-	@Scheduled(initialDelay = 5000, fixedDelay = 60000)
+	@Scheduled(initialDelay = 15000, fixedDelay = 600000)
 	public void updateInternal() throws InvalidNameException, JsonProcessingException, SqlException, AuthException {
 		try {
 			this.root = ldapRepository.getRoot();
