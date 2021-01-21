@@ -8,4 +8,4 @@ services:
     env_file:
      - ${home}/ldap-dev.env
     ports:
-    - 2306:3306
+    - 3306:3306

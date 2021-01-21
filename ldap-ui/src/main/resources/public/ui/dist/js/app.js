@@ -202,430 +202,6 @@ angular.module("rooster").run(
 
 );
 
-angular.module("rooster").directive(
-	"ldapTree",
-	['Restangular','LdapService','AuthenticationService','$location',
-	function(Restangular,LdapService,AuthenticationService, $location) {
-		return {
-	        restrict: 'A',
-			templateUrl : "/auth/templates/ldap_tree.html",
-			scope : {},
-			link : function(scope, element, attrs, ctrl) {
-				
-		        scope.update = function() {
-	        		LdapService.list({parentId: attrs.id, permission: [ "READ" ], includeIgnored : true },
-		        			function(entries) {
-	        					_.each(entries,function(e) {
-	        						e.expanded = e.id == "00000000-0000-0000-0000-000000000000"
-	        					})
-		        				scope.entries = entries 
-		        			}
-		        		);
-	        		LdapService.getPermissions(attrs.id,
-		        			function(permissions) { 
-		        				scope.permissions = permissions;
-		        				scope.admin = AuthenticationService.user.admin; 
-		        			}
-		        		);
-		        }
-		        
-				scope.open = function(id) {
-					$location.path("/main/ldap/"+id);
-				}
-
-		        scope.ignore = function(entry) {
-		        	console.log("ignore: ",entry)
-		        	LdapService.ignore(entry.id,!entry.ignored,scope.update);
-		        }
-		        
-		        scope.update();
-
-			}
-		};
-	}]
-);
-angular.module("rooster").factory(
-	"AuthenticationService", 
-	[ '$interval', '$timeout', '$location', 'Restangular', '$rootScope', function($interval,$timeout,$location,Restangular,$rootScope) {
-
-		console.log("authentication service <init>");
-		
-		var s = {};
-		
-		s.checked = false;
-		
-		s.current = "-NONE-";
-		s.user = {};
-
-		s.renew = function() {
-			
-			Restangular.all("api/authenticate").customPOST().then(
-				function(u) {
-					console.log("authentication service renew(): finished: ",u);
-					var c = JSON.stringify(u);
-					if(!u.id) {
-						if($location.path().startsWith("/login")) {
-							// nope
-						} else if ($location.path().startsWith("/reset")) {
-							// nope
-						} else {
-							console.log("authentication service renew(): redirecting to /login");
-							$location.path("/login");
-						}
-					} else {
-						console.log("authentication service renew(): user id: "+u.id, u);
-						if(u.needsReset) {
-							$location.path("/reset");
-						} else if(
-								$location.path().startsWith("/login") ||
-								$location.path().startsWith("/reset")
-							) {
-							console.log("authentication service renew(): redirecting to /");
-							$location.path("/");
-						}
-					} 
-					
-					if(s.current==c) {
-						console.log("authentication service renew(): same, ignore");
-						return; 
-					} else {
-						console.log("authentication service renew(): user changed, broadcasting ... ");
-						s.current = c;
-						s.user = u;
-						console.log("auth service - sending auth event ... ");
-						$rootScope.$broadcast("auth", u);
-					}
-					
-				}
-			); 
-			console.log("authentication service renew()");
-		}
-		
-		s.updatePassword = function(password, success, error) {
-			Restangular.all("api/authenticate/update").customPOST({},"",{newPassword:password}).then(success,error);
-		};
-		
-		s.initiateReset = function(name, success, error) {
-			Restangular.all("api/authenticate/reset").customPOST({},"",{username:name}).then(success,error);
-		}
-		
-		s.login = function(username, password, success, error) {
-			Restangular.all("api/authenticate").customPOST({},"",{username:username, password:password}).then(
-					function(x) {
-						$timeout(s.renew,2000);
-						console.log("auth service: login: success ... ");
-						if(success) { success(x); }
-					},
-					function(x) {
-						$timeout(s.renew,2000);
-						console.log("auth service: login: error ... ");
-						if(error) { error(x); }
-					}
-			);
-		}
-
-		s.logout = function() {
-			Restangular.all("api/authenticate").customDELETE().then(
-				function() {
-					$location.path("/login");
-				},
-				function() {
-					$location.path("/login");
-				}
-			);
-		}
-		
-		
-		$interval(s.renew,60000);
-		
-		s.renew();
-		
-		return s;
-		 
-	}]
-	
-);
-
-angular.module("rooster").factory(
-	"EntryService", 
-	[ '$interval', '$timeout', '$location', 'Restangular', 'AuthenticationService', function($interval,$timeout,$location,Restangular,AuthenticationService) {
-		
-		
-		
-	}]
-);
-angular.module("rooster").factory(
-	"LdapService", 
-	[ '$interval', '$timeout', '$location', 'Restangular', function($interval,$timeout,$location,Restangular) {
-
-		console.log("ldap service <init>");
-		
-		var s = {};
-		
-		s.list = function(params,success,error) {
-			Restangular.all("api/ldap/entries").getList(params).then(
-				function(x) {
-					console.log("ldap service: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-		
-		s.get = function(id,success,error) {
-			Restangular.one("api/ldap/entries",id).get().then(
-				function(x) {
-					console.log("ldap service: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-		
-		s.setPassword = function(id,oldPassword,password,success,error) {
-			Restangular.one("api/ldap/entries",id).all("password").customPUT({},"",{oldPassword:oldPassword,newPassword:password}).then(
-				function(x) {
-					console.log("ldap service setpw: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service setpw: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-		
-		s.checkCreate = function(id,params,success,error) {
-			Restangular.one("api/ldap/entries",id).one("create").customPUT({},"",params).then(
-				function(x) {
-					console.log("ldap service check create: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service check create: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-
-		s.create = function(id,params,success,error) {
-			Restangular.one("api/ldap/entries",id).one("create").customPOST({},"",params).then(
-				function(x) {
-					console.log("ldap service check create: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service check create: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-
-		s.moveTo = function(entryId,newParentId,success,error) {
-			console.log("[service] move "+entryId+" to: "+newParentId);
-			Restangular.one("api/ldap/entries",entryId).one("move").customPOST({},"",{newParentId:newParentId}).then(
-				function(x) {
-					console.log("ldap service check create: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service check create: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-
-		s.save = function(id,entry,success,error) {
-			Restangular.one("api/ldap/entries",id).customPUT(entry).then(
-				function(x) {
-					console.log("ldap service save: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service save: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-		
-		s.enableUser = function(id,enabled,success,error) {
-			Restangular.one("api/ldap/entries",id).all("status").customPUT({},"",{enabled:enabled}).then(
-				function(x) {
-					console.log("ldap service: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-		
-		
-		s.getChildren = function(id,filter,success,error) {
-			s.list({parentId:id,permission:"READ", filter},success,error);
-		}
-		
-		s.addMember = function(groupId, principalId,success,error) {
-			Restangular.one("api/ldap/entries",groupId).all("members").customPOST({},"",{principalId: principalId}).then(
-				function(x) {
-					console.log("ldap service addmember: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service addmember: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-
-		s.removeMember = function(groupId, principalId,success,error) {
-			Restangular.one("api/ldap/entries",groupId).one("members",principalId).customDELETE().then(
-					function(x) {
-						console.log("ldap service addmember: success ",x);
-						if(success) success(x);
-					},
-					function(x) {
-						console.log("ldap service addmember: error ",x);
-						if(error) error(x);
-					}
-				);
-		}
-		
-		s.getMembers = function(id,success,error) {
-			Restangular.one("api/ldap/entries",id).all("members").getList().then(
-				function(x) {
-					console.log("ldap service: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-		
-		s.getMemberships = function(id,success,error) {
-			Restangular.one("api/ldap/entries",id).all("memberships").getList().then(
-				function(x) {
-					console.log("ldap service: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-
-		s.getAcls = function(id,success,error) {
-			Restangular.one("api/ldap/entries",id).all("acls").getList().then(
-				function(x) {
-					console.log("ldap service acls: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service acls: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-
-		s.addAcl = function(id,acl,success,error) {
-			Restangular.one("api/ldap/entries",id).all("acls").customPOST(acl).then(
-				function(x) {
-					console.log("ldap service acls: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service acls: error ",x);
-					if(error) success(x);
-				}
-			);
-		}
-
-		s.removeAcl = function(id,aclId,success,error) {
-			Restangular.one("api/ldap/entries",id).one("acls",aclId).customDELETE().then(
-				function(x) {
-					console.log("ldap service acls: success ",x);
-					if(success) success(x);
-				},
-				function(x) { 
-					console.log("ldap service acls: error ",x);
-					if(error) success(x);
-				}
-			);
-		}
-
-		s.getPermissions = function(id,success,error) {
-			Restangular.one("api/ldap/entries",id).all("permissions").getList().then(
-				function(x) {
-					console.log("ldap service: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service: error ",x);
-					if(error) success(x);
-				}
-			);
-		}
-
-		s.ignore = function(id,ignore,success,error) {
-			var d = {ignore:ignore};
-			console.log("ignore: ",id,d);
-			Restangular.one("api/ldap/entries",id).all("ignore").customPOST(d,"",d).then(
-				function(x) {
-					console.log("ldap service: success ",x);
-					if(success) success(x);
-				},
-				function(x) {
-					console.log("ldap service: error ",x);
-					if(error) error(x);
-				}
-			);
-		}
-		
-		s.query = function(type,permissions) {
-			return function(params,callback) {
-				s.list(
-					{type: type, permission: permissions, filter: params, offset: 0, max: 16},
-					function(results) {
-						_.each(results, function(r) {
-							r.text = r.hierarchy.join(" | ");
-						});
-						callback(params,results);	
-					}
-				);
-			}
-		};
-		
-		s.resolve = function() {
-			return function(id,callback) {
-				s.get(id, 
-					function(result) {
-						if(result && result.fullPath) {
-							result.name = 
-							result.text = result.hierarchy.join(" | ");
-						}
-						callback(result);
-					}
-				);
-			}
-		};
-		
-		
-		return s;
-		 
-	}]
-	
-);
-
 angular.module("rooster").controller(
 	"LdapDetailController", 
 	[ '$timeout', '$rootScope', '$location', '$routeParams', 'LdapService', 'AuthenticationService',  function($timeout,$rootScope,$location,$routeParams, LdapService, AuthenticationService) {
@@ -1309,6 +885,430 @@ angular.module("rooster").controller(
 		status.update();
 		
 		console.log("status controller <init>");
+	}]
+	
+);
+
+angular.module("rooster").directive(
+	"ldapTree",
+	['Restangular','LdapService','AuthenticationService','$location',
+	function(Restangular,LdapService,AuthenticationService, $location) {
+		return {
+	        restrict: 'A',
+			templateUrl : "/auth/templates/ldap_tree.html",
+			scope : {},
+			link : function(scope, element, attrs, ctrl) {
+				
+		        scope.update = function() {
+	        		LdapService.list({parentId: attrs.id, permission: [ "READ" ], includeIgnored : true },
+		        			function(entries) {
+	        					_.each(entries,function(e) {
+	        						e.expanded = e.id == "00000000-0000-0000-0000-000000000000"
+	        					})
+		        				scope.entries = entries 
+		        			}
+		        		);
+	        		LdapService.getPermissions(attrs.id,
+		        			function(permissions) { 
+		        				scope.permissions = permissions;
+		        				scope.admin = AuthenticationService.user.admin; 
+		        			}
+		        		);
+		        }
+		        
+				scope.open = function(id) {
+					$location.path("/main/ldap/"+id);
+				}
+
+		        scope.ignore = function(entry) {
+		        	console.log("ignore: ",entry)
+		        	LdapService.ignore(entry.id,!entry.ignored,scope.update);
+		        }
+		        
+		        scope.update();
+
+			}
+		};
+	}]
+);
+angular.module("rooster").factory(
+	"AuthenticationService", 
+	[ '$interval', '$timeout', '$location', 'Restangular', '$rootScope', function($interval,$timeout,$location,Restangular,$rootScope) {
+
+		console.log("authentication service <init>");
+		
+		var s = {};
+		
+		s.checked = false;
+		
+		s.current = "-NONE-";
+		s.user = {};
+
+		s.renew = function() {
+			
+			Restangular.all("api/authenticate").customPOST().then(
+				function(u) {
+					console.log("authentication service renew(): finished: ",u);
+					var c = JSON.stringify(u);
+					if(!u.id) {
+						if($location.path().startsWith("/login")) {
+							// nope
+						} else if ($location.path().startsWith("/reset")) {
+							// nope
+						} else {
+							console.log("authentication service renew(): redirecting to /login");
+							$location.path("/login");
+						}
+					} else {
+						console.log("authentication service renew(): user id: "+u.id, u);
+						if(u.needsReset) {
+							$location.path("/reset");
+						} else if(
+								$location.path().startsWith("/login") ||
+								$location.path().startsWith("/reset")
+							) {
+							console.log("authentication service renew(): redirecting to /");
+							$location.path("/");
+						}
+					} 
+					
+					if(s.current==c) {
+						console.log("authentication service renew(): same, ignore");
+						return; 
+					} else {
+						console.log("authentication service renew(): user changed, broadcasting ... ");
+						s.current = c;
+						s.user = u;
+						console.log("auth service - sending auth event ... ");
+						$rootScope.$broadcast("auth", u);
+					}
+					
+				}
+			); 
+			console.log("authentication service renew()");
+		}
+		
+		s.updatePassword = function(password, success, error) {
+			Restangular.all("api/authenticate/update").customPOST({},"",{newPassword:password}).then(success,error);
+		};
+		
+		s.initiateReset = function(name, success, error) {
+			Restangular.all("api/authenticate/reset").customPOST({},"",{username:name}).then(success,error);
+		}
+		
+		s.login = function(username, password, success, error) {
+			Restangular.all("api/authenticate").customPOST({},"",{username:username, password:password}).then(
+					function(x) {
+						$timeout(s.renew,2000);
+						console.log("auth service: login: success ... ");
+						if(success) { success(x); }
+					},
+					function(x) {
+						$timeout(s.renew,2000);
+						console.log("auth service: login: error ... ");
+						if(error) { error(x); }
+					}
+			);
+		}
+
+		s.logout = function() {
+			Restangular.all("api/authenticate").customDELETE().then(
+				function() {
+					$location.path("/login");
+				},
+				function() {
+					$location.path("/login");
+				}
+			);
+		}
+		
+		
+		$interval(s.renew,60000);
+		
+		s.renew();
+		
+		return s;
+		 
+	}]
+	
+);
+
+angular.module("rooster").factory(
+	"EntryService", 
+	[ '$interval', '$timeout', '$location', 'Restangular', 'AuthenticationService', function($interval,$timeout,$location,Restangular,AuthenticationService) {
+		
+		
+		
+	}]
+);
+angular.module("rooster").factory(
+	"LdapService", 
+	[ '$interval', '$timeout', '$location', 'Restangular', function($interval,$timeout,$location,Restangular) {
+
+		console.log("ldap service <init>");
+		
+		var s = {};
+		
+		s.list = function(params,success,error) {
+			Restangular.all("api/ldap/entries").getList(params).then(
+				function(x) {
+					console.log("ldap service: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+		
+		s.get = function(id,success,error) {
+			Restangular.one("api/ldap/entries",id).get().then(
+				function(x) {
+					console.log("ldap service: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+		
+		s.setPassword = function(id,oldPassword,password,success,error) {
+			Restangular.one("api/ldap/entries",id).all("password").customPUT({},"",{oldPassword:oldPassword,newPassword:password}).then(
+				function(x) {
+					console.log("ldap service setpw: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service setpw: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+		
+		s.checkCreate = function(id,params,success,error) {
+			Restangular.one("api/ldap/entries",id).one("create").customPUT({},"",params).then(
+				function(x) {
+					console.log("ldap service check create: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service check create: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+
+		s.create = function(id,params,success,error) {
+			Restangular.one("api/ldap/entries",id).one("create").customPOST({},"",params).then(
+				function(x) {
+					console.log("ldap service check create: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service check create: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+
+		s.moveTo = function(entryId,newParentId,success,error) {
+			console.log("[service] move "+entryId+" to: "+newParentId);
+			Restangular.one("api/ldap/entries",entryId).one("move").customPOST({},"",{newParentId:newParentId}).then(
+				function(x) {
+					console.log("ldap service check create: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service check create: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+
+		s.save = function(id,entry,success,error) {
+			Restangular.one("api/ldap/entries",id).customPUT(entry).then(
+				function(x) {
+					console.log("ldap service save: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service save: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+		
+		s.enableUser = function(id,enabled,success,error) {
+			Restangular.one("api/ldap/entries",id).all("status").customPUT({},"",{enabled:enabled}).then(
+				function(x) {
+					console.log("ldap service: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+		
+		
+		s.getChildren = function(id,filter,success,error) {
+			s.list({parentId:id,permission:"READ", filter},success,error);
+		}
+		
+		s.addMember = function(groupId, principalId,success,error) {
+			Restangular.one("api/ldap/entries",groupId).all("members").customPOST({},"",{principalId: principalId}).then(
+				function(x) {
+					console.log("ldap service addmember: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service addmember: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+
+		s.removeMember = function(groupId, principalId,success,error) {
+			Restangular.one("api/ldap/entries",groupId).one("members",principalId).customDELETE().then(
+					function(x) {
+						console.log("ldap service addmember: success ",x);
+						if(success) success(x);
+					},
+					function(x) {
+						console.log("ldap service addmember: error ",x);
+						if(error) error(x);
+					}
+				);
+		}
+		
+		s.getMembers = function(id,success,error) {
+			Restangular.one("api/ldap/entries",id).all("members").getList().then(
+				function(x) {
+					console.log("ldap service: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+		
+		s.getMemberships = function(id,success,error) {
+			Restangular.one("api/ldap/entries",id).all("memberships").getList().then(
+				function(x) {
+					console.log("ldap service: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+
+		s.getAcls = function(id,success,error) {
+			Restangular.one("api/ldap/entries",id).all("acls").getList().then(
+				function(x) {
+					console.log("ldap service acls: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service acls: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+
+		s.addAcl = function(id,acl,success,error) {
+			Restangular.one("api/ldap/entries",id).all("acls").customPOST(acl).then(
+				function(x) {
+					console.log("ldap service acls: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service acls: error ",x);
+					if(error) success(x);
+				}
+			);
+		}
+
+		s.removeAcl = function(id,aclId,success,error) {
+			Restangular.one("api/ldap/entries",id).one("acls",aclId).customDELETE().then(
+				function(x) {
+					console.log("ldap service acls: success ",x);
+					if(success) success(x);
+				},
+				function(x) { 
+					console.log("ldap service acls: error ",x);
+					if(error) success(x);
+				}
+			);
+		}
+
+		s.getPermissions = function(id,success,error) {
+			Restangular.one("api/ldap/entries",id).all("permissions").getList().then(
+				function(x) {
+					console.log("ldap service: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service: error ",x);
+					if(error) success(x);
+				}
+			);
+		}
+
+		s.ignore = function(id,ignore,success,error) {
+			var d = {ignore:ignore};
+			console.log("ignore: ",id,d);
+			Restangular.one("api/ldap/entries",id).all("ignore").customPOST(d,"",d).then(
+				function(x) {
+					console.log("ldap service: success ",x);
+					if(success) success(x);
+				},
+				function(x) {
+					console.log("ldap service: error ",x);
+					if(error) error(x);
+				}
+			);
+		}
+		
+		s.query = function(type,permissions) {
+			return function(params,callback) {
+				s.list(
+					{type: type, permission: permissions, filter: params, offset: 0, max: 16},
+					function(results) {
+						_.each(results, function(r) {
+							r.text = r.hierarchy.join(" | ");
+						});
+						callback(params,results);	
+					}
+				);
+			}
+		};
+		
+		s.resolve = function() {
+			return function(id,callback) {
+				s.get(id, 
+					function(result) {
+						if(result && result.fullPath) {
+							result.name = 
+							result.text = result.hierarchy.join(" | ");
+						}
+						callback(result);
+					}
+				);
+			}
+		};
+		
+		
+		return s;
+		 
 	}]
 	
 );

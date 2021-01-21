@@ -53,21 +53,27 @@ the easiest way to run is the third one, you can check out the examples folder f
 - container port **8080**
 - no volumes needed
 
-| Name           | Value                  | Description                                                  |
-| -------------- | ---------------------- | ------------------------------------------------------------ |
-| MYSQL_USERNAME | "ldap"                 | the user to use on the DB. must have sufficient permissions to execute the flyway migrations (ALTER,DROP,CREATE etc) |
-| MYSQL_PASSWORD | [NONE]                 | the password for the DB user                                 |
-| MYSQL_HOST     | "mysql"                | the hostname for the DB                                      |
-| MYSQL_PORT     | "3306"                 | ... the port?                                                |
-| MYSQL_SCHEMA   | "ldap"                 | the DB schema                                                |
-| LDAP_PROTO     | "ldap"                 | wether to use LDAP or LDAPS. i will NOT implement LDAPS without checking the certs |
-| LDAP_HOST      | "dirsrv"               | the LDAP host                                                |
-| LDAP_PORT      | "389"                  | the LDAP port. note that i am not doing START_TLS            |
-| LDAP_TYPE      | "ds389"                | currently, only 389 is supported. this may change to inlude openLDAP and apacheDS |
-| LDAP_BASE      | "dc=foo.org"           | the root DN                                                  |
-| LDAP_USER      | "cn=Directory Manager" | the user to use on the LDAP server. this should have pretty wide permissions. however, using the DirMgmr is probably bad. i will changes this |
-| LDAP_PASS      | [NONE]                 | the corresponding password                                   |
-| SMTP_*         |                        | SMTP config: host, port, user, password                      |
+| Name            | Value                  | Description                                                  |
+| --------------- | ---------------------- | ------------------------------------------------------------ |
+| URL             |                        | the public protocol and hostname for this instance, e.g. "https://users.example.com" |
+| MYSQL_USERNAME  | "ldap"                 | the user to use on the DB. must have sufficient permissions to execute the flyway migrations (ALTER,DROP,CREATE etc) |
+| MYSQL_PASSWORD  | [NONE]                 | the password for the DB user                                 |
+| MYSQL_HOST      | "mysql"                | the hostname for the DB                                      |
+| MYSQL_PORT      | "3306"                 | ... the port?                                                |
+| MYSQL_SCHEMA    | "ldap"                 | the DB schema                                                |
+| LDAP_PROTO      | "ldap"                 | wether to use LDAP or LDAPS. i will NOT implement LDAPS without checking the certs |
+| LDAP_HOST       | "dirsrv"               | the LDAP host                                                |
+| LDAP_PORT       | "389"                  | the LDAP port. note that i am not doing START_TLS            |
+| LDAP_TYPE       | "ds389"                | currently, only 389 is supported. this may change to inlude openLDAP and apacheDS |
+| LDAP_BASE       | "dc=foo.org"           | the root DN                                                  |
+| LDAP_USER       | "cn=Directory Manager" | the user to use on the LDAP server. this should have pretty wide permissions. however, using the DirMgmr is probably bad. i will changes this |
+| LDAP_PASS       | [NONE]                 | the corresponding password                                   |
+| **SMTP CONFIG** |                        |                                                              |
+| MAIL_HOST       |                        | smtp server name                                             |
+| MAIL_PORT       |                        | the port to use for outgoing SMTP. this can be STARTTLS. if you are planning to use straight-up TLS, you also have to set: "spring_profiles_active=smtps" |
+| MAIL_USER       |                        | username for the SMTP server                                 |
+| MAIL_PASSWORD   |                        | password for the SMTP server                                 |
+| MAIL_SENDER     |                        | email adress to use for SMTP envelope and reply-to headers   |
 
 ### 389DS Container
 
