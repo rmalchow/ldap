@@ -19,7 +19,7 @@
 		<springboot-maven.version>${springboot.version}</springboot-maven.version>
 		<spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
 		<springframework.ldap.version>2.3.1.RELEASE</springframework.ldap.version>
-		<dbutil.version>0.0.50</dbutil.version>
+		<dbutil.version>0.0.62</dbutil.version>
 		<apitester.version>0.1.5</apitester.version>
 		<spring-jwt.version>0.1.30</spring-jwt.version>
 		<commons-lang3.version>3.8.1</commons-lang3.version>
@@ -30,6 +30,10 @@
 		<commons-codec.version>1.14</commons-codec.version>
 		<jackson.version>2.10.0</jackson.version>
 		<velocity.version>2.0</velocity.version>
+
+
+		<hibernate-jpa.version>1.0.1.Final</hibernate-jpa.version>
+		<commons-lang3.version>3.8.1</commons-lang3.version>
 
 		<mariadb.version>2.1.2</mariadb.version>
 		<bouncycastle.version>1.64</bouncycastle.version>
@@ -65,7 +69,6 @@
 				<artifactId>velocity-engine-core</artifactId>
 				<version>${velocity.version}</version>
 			</dependency>
-			
 			
 			<dependency>
 				<groupId>net.logstash.logback</groupId>
@@ -271,6 +274,18 @@
 
 	</dependencyManagement>
 	<dependencies>
+			
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>

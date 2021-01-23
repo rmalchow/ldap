@@ -208,4 +208,16 @@ public class EntryRepo extends AbstractGuidRepository<LdapEntry> {
 		return true;
 	}
 	
+	public LdapEntry getByUsername(String username) throws SqlException {
+		Select s = new MysqlStatementBuilder().createSelect();
+		TableReference tr = s.fromTable(LdapEntry.class);
+		s.condition(Operator.AND,tr.field("type"),Comparator.EQ,tr.value("USER"));
+		Condition c = s.condition(Operator.AND);
+		c.condition(Operator.OR,tr.field("name"), Comparator.LIKE, tr.value(username)); 
+		c.condition(Operator.OR,tr.field("email"), Comparator.LIKE, tr.value(username));
+		s.limit(0, 1);
+		return findOne(s);
+	}
+	
+	
 }

@@ -1,10 +1,10 @@
 angular.module("rooster").controller(
 	"ResetController", 
-	[ '$timeout', '$routeParams', '$rootScope', 'AuthenticationService', 'Restangular', function($timeout,$routeParams,$rootScope,AuthenticationService,Restangular) {
+	[ '$timeout', '$routeParams', '$location' , '$rootScope', 'AuthenticationService', 'Restangular', function($timeout,$routeParams,$location,$rootScope,AuthenticationService,Restangular) {
 
 		var reset = this;
 		reset.status =  1;
-		reset.username = "";
+		reset.username = $location.search()["username"];
 		reset.password = "";
 		
 		reset.initiateStep = 1;

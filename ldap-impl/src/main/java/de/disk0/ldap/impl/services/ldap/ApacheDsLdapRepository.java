@@ -32,11 +32,15 @@ import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import de.disk0.ldap.apache.ApacheDsEmbedded;
 import de.disk0.ldap.api.entities.EntryType;
 import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.exceptions.AuthException;
 import de.disk0.ldap.api.exceptions.LdapException;
+import de.disk0.ldap.api.exceptions.NotAuthenticatedException;
 import de.disk0.ldap.api.services.LdapRepository;
 import de.disk0.ldap.impl.services.repos.TokenRepo;
 
@@ -54,7 +58,6 @@ public class ApacheDsLdapRepository implements LdapRepository {
 	public static final String rootId = "00000000-0000-0000-0000-000000000000"; 
 
 	private static String[] atts = new String[] { 
-			"sambaAcctFlags",
 			"businessCategory", "cn",
 			"dc", "description", 
 			"displayname", 
@@ -124,6 +127,8 @@ public class ApacheDsLdapRepository implements LdapRepository {
 		le.setEmail(getAttribute(e, "mail"));
 		le.setFamilyname(getAttribute(e, "sn"));
 		le.setGivenname(getAttribute(e, "givenname"));
+		
+		System.err.println(" ====> "+le.getEmail()+" / "+getAttribute(e, "mail"));
 		
 		le.setPath(getPath(le.getId()));
 		
@@ -202,9 +207,12 @@ public class ApacheDsLdapRepository implements LdapRepository {
 			
 			OrFilter of = new OrFilter();
 			of.append(new EqualsFilter("userPrincipalName", username));
+			of.append(new EqualsFilter("mail", username));
 			of.append(new EqualsFilter("uid", username));
 			sr.setFilter(of.encode());
 
+			log.info("username filter: "+new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(of.encode()));
+			
 			Cursor<Entry> cursor = embeddedADS.getAdminSession().search(sr);
 			if(cursor.next()) {
 				Entry e = cursor.get();
@@ -212,6 +220,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 			}
 			return null;
 		} catch (Exception e) {
+			log.warn("error in getByUsername: ",e);
 			throw new LdapException("GET_BY_ID_FAILED", "Failed to get entry by ID", e);
 		}
 	}
@@ -385,7 +394,12 @@ public class ApacheDsLdapRepository implements LdapRepository {
 	@Override
 	public LdapEntry authenticate(String username, String password) throws LdapException, AuthException {
 		try {
-			LdapEntry le = getByUsername(username); 
+			LdapEntry le = getByUsername(username);
+			if(le == null) {
+				log.warn("could not find user with username: "+username);
+				throw new NotAuthenticatedException();
+			}
+			
 			if(le!=null && tokenRepo.hasToken(le.getId())) {
 				if(tokenRepo.verify(le.getId(), password)) {
 					le.setNeedsReset(true);

@@ -35,7 +35,7 @@
 							<div class="alert alert-success" ng-if="login.status == -3">Login succeeded!</div>
 						</div>
 						<div class="float-right">
-							<a href="#/reset" class="btn btn-link">
+							<a ng-href="#/reset?username={{login.username}}" class="btn btn-link">
 								Forgot Password
 							</a>
 							<button class="btn btn-primary" ng-disabled="login.status != 0" ng-click="login.login()">

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import de.disk0.dbutil.api.Comparator;
+import de.disk0.dbutil.api.Condition;
 import de.disk0.dbutil.api.JoinTable;
 import de.disk0.dbutil.api.Operator;
 import de.disk0.dbutil.api.Select;
@@ -115,6 +116,6 @@ public class EntryAclRepo extends AbstractGuidRepository<EntryAcl> {
 		}
 		return e;
 	}
-	
+
 
 }

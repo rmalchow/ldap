@@ -27,7 +27,13 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import de.disk0.dbutil.api.Comparator;
+import de.disk0.dbutil.api.Condition;
+import de.disk0.dbutil.api.Operator;
+import de.disk0.dbutil.api.Select;
+import de.disk0.dbutil.api.TableReference;
 import de.disk0.dbutil.api.exceptions.SqlException;
+import de.disk0.dbutil.impl.mysql.MysqlStatementBuilder;
 import de.disk0.ldap.api.entities.Complaint;
 import de.disk0.ldap.api.entities.EntryAcl;
 import de.disk0.ldap.api.entities.EntryType;
@@ -415,26 +421,39 @@ public class LdapServiceImpl implements LdapService {
 	@Override
 	public User authenticate(String username, String password, List<String> groupIds) throws LdapException, AuthException {
 		log.info("ldap service: authenticating: "+username);
-		LdapEntry e = ldapRepository.authenticate(username, password);
-		
-		if(e == null) {
-			log.info("ldap service: authenticating: user is null!");
-			throw new NotAuthenticatedException();
-		}
-		
 		try {
-			entryAclRepo.checkFirst(e.getId());
-		} catch (Exception e2) {
-		}
 
-		log.info("ldap service: authenticating: get user ... ");
-		User user = update(e.getId());
-		log.info("ldap service: authenticating: user is: "+user);
-		if(groupIds == null || groupIds.size() == 0) {
-			return user;
-		}
-		if(user.getPrincipalIds().containsAll(groupIds)) {
-			return user;
+			LdapEntry e = entryRepo.getByUsername(username);
+			
+			if(e == null) {
+				log.info("ldap service: authenticating: user is null!");
+				throw new NotAuthenticatedException();
+			}
+			
+			e = ldapRepository.authenticate(e.getName(), password);
+			
+			if(e == null) {
+				log.info("ldap service: authenticating: user is null!");
+				throw new NotAuthenticatedException();
+			}
+			
+			try {
+				entryAclRepo.checkFirst(e.getId());
+			} catch (Exception e2) {
+			}
+			
+			log.info("ldap service: authenticating: get user ... ");
+			User user = update(e.getId());
+			log.info("ldap service: authenticating: user is: "+user);
+			if(groupIds == null || groupIds.size() == 0) {
+				return user;
+			}
+			if(user.getPrincipalIds().containsAll(groupIds)) {
+				return user;
+			}
+			
+		} catch (Exception e) {
+			log.warn("an error occured while authenticating", e);
 		}
 		throw new NotAuthorizedException();
 	}

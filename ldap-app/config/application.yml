@@ -6,7 +6,7 @@ spring.resources.cache.period: 1
 
 spring.datasource.username: ${MYSQL_USER:ldap}
 spring.datasource.password: ${MYSQL_PASSWORD:s3cr3t}
-spring.datasource.url: jdbc:mariadb://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:2306}/${MYSQL_SCHEMA:ldap}
+spring.datasource.url: jdbc:mariadb://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_SCHEMA:ldap}
 
 
 
