@@ -99,7 +99,7 @@ h4 {
 #login-row {
 	position: fixed;
 	bottom: 30%;
-	left: 0px;
+	left: 0px; 
 	width: 100%;
 	z-index: 10;
 }
@@ -107,12 +107,13 @@ h4 {
 #login-box {
 	width: 75%;
 	max-width: 600px;
-	padding: 30px 10px 20px 10px;
+	min-height: 450px;
+	padding: 50px 30px 40px 30px;
 	margin: auto;
-	background: linear-gradient(170deg, rgba(176, 185, 176, 1) 50%,	rgba(124, 144, 148, 1) 100%);
-	border-radius: 10px;
+	background: linear-gradient(170deg, rgba(176, 185, 176, 0.7) 50%,	rgba(124, 144, 148, 1) 100%);
+	border-radius: 30px;
 	color: white;
-	box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+	box-shadow: 0px 0px 20px rgba(0,0,0,0.8);
 }
 
 .gradient {

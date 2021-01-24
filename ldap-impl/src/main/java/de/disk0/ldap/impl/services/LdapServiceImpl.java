@@ -548,10 +548,15 @@ public class LdapServiceImpl implements LdapService {
 				Map<String,Object> params = new HashMap<String, Object>();
 				params.put("token", token.getToken());
 				params.put("user", u);
-				mailService.sendMail(le.getEmail(), "main.pwReset", null, params);
+				if(mailService.sendMail(le.getEmail(), "main.pwReset", null, params)) {
+					return;
+				}
+			} else {
+				return;
 			}
 		} catch (Exception e) {
 		}
+		throw new RuntimeException("reset failed");
 	}
 
 	@Override

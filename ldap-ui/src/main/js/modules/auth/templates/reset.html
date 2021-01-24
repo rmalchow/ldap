@@ -21,7 +21,7 @@
 				</div>				
 				<div class="col-md-12">
 					<div class="form-group">
-						Please enter your username. If we find a matching account, we will send you a temporary token.
+						Please enter your username. If we find a matching account, we will send you an email with further instructions.
 					</div>
 				</div>
 				<div class="col-md-12">
@@ -37,29 +37,41 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-12">
+				<div class="col-md-12" ng-if="reset.initiateStep == 2">
 					<div class="form-group">
-						<input class="form-control" placeholder="Enter token" ng-model="reset.token" ng-disabled="reset.initiateStep != 2">
+						<input class="form-control" placeholder="Enter token" ng-model="reset.token" >
+					</div>
+					<div class="form-group clearfix">
+						<div class="float-right">
+							<button 
+								class="btn btn-primary" 
+								ng-click="reset.completeReset()">
+								Confirm
+								<i class="fas fa-envelope-open-text"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12" ng-if="reset.initiateStep == -1">
+					<div class="form-group">
+						<div class="alert alert-danger">
+							The reset has failed. Please try again later.
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12" ng-if="reset.initiateStep == 3">
+					<div class="form-group">
+						<div class="alert alert-info">
+							Please wait ... 
+						</div>
 					</div>
 				</div>
 				<div class="col-md-12">
 					<div class="form-group clearfix">
-						<div>
-							<div class="alert alert-info" ng-if="reset.initiateStep == -1">Please wait ... </div>
-							<div class="alert alert-danger" ng-if="reset.initiateStep == -2">Reset failed!</div>
-						</div>
 						<div class="float-right">
-							<a href="#/reset" class="btn btn-link" ng-click="reset.cancel()">
-								Cancel
+							<a ng-href="#/login" class="text-reset fs-6">
+								cancel
 							</a>
-							<button 
-								class="btn" 
-								ng-class="{'btn-primary' : reset.initiateStep == 2 }" 
-								ng-class="{'btn-danger' : reset.initiateStep == -2 }" 
-								ng-click="reset.completeReset()" ng-disabled="reset.initiateStep != 2">
-								Confirm
-								<i class="fas fa-envelope-open-text"></i>
-							</button>
 						</div>
 					</div>
 				</div>

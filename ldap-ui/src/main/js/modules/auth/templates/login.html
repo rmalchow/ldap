@@ -22,7 +22,7 @@
 					</div>
 					<div class="col-md-12">
 						<div class="form-group">
-							<input id="username" class="form-control" autofocus="true" ng-model="login.username" placeholder="Username" ng-change="login.check()" ng-submit="login.login()" ng-init="setFocus()">
+							<input id="username" class="form-control" autofocus="true" ng-model="login.username" placeholder="Username or Password" ng-change="login.check()" ng-submit="login.login()" ng-init="setFocus()">
 						</div>
 						<div class="form-group">
 							<input class="form-control" type="password"  placeholder="Password" ng-model="login.password" ng-change="login.check()" ng-submit="login.login()">
@@ -35,10 +35,11 @@
 								<div class="alert alert-danger" ng-if="login.status == -2">Login failed!</div>
 								<div class="alert alert-success" ng-if="login.status == -3">Login succeeded!</div>
 							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="form-group clearfix">
 							<div class="float-right">
-								<a ng-href="#/reset?username={{login.username}}" class="btn btn-link">
-									Forgot Password
-								</a>
 								<button class="btn btn-primary" ng-disabled="login.status != 0" ng-click="login.login()">
 									Login
 									<i class="fas fa-sign-in-alt"></i>
@@ -48,6 +49,15 @@
 					</div>
 				</div>
 			</form>
+			<div class="col-md-12">
+				<div class="form-group clearfix">
+					<div class="float-right">
+						<a ng-href="#/reset?username={{login.username}}" class="text-reset fs-6">
+							forgot password
+						</a>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -36,15 +36,15 @@ angular.module("rooster").controller(
 				},
 				function () {
 					console.log("reset failed ... ");
+					reset.initiateStep = -1;
 				}
 			)
 		}
 		
 		reset.completeReset = function() {
-			reset.initiateStep = -1;
+			reset.initiateStep = 3;
 			$timeout(
 				function() {
-		
 					AuthenticationService.login(
 						reset.username, 
 						reset.token,
@@ -54,7 +54,7 @@ angular.module("rooster").controller(
 						function () {
 							console.log("reset controller: login: error ... ");
 							reset.token = "";
-							reset.initiateStep = -2;
+							reset.initiateStep = -1;
 							$timeout(
 								function() { 
 									reset.initiateStep = 1; 
