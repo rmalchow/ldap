@@ -426,7 +426,7 @@ public class LdapServiceImpl implements LdapService {
 			LdapEntry e = ldapRepository.authenticate(username, password);
 			
 			if(e == null) {
-				log.info("ldap service: authenticating: user is null! ("+username+"/"+password+")");
+				log.info("ldap service: authenticating: user is null! ("+username+")");
 				throw new NotAuthenticatedException();
 			}
 			
