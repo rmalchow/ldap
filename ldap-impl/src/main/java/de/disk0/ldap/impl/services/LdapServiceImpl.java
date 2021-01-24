@@ -556,7 +556,7 @@ public class LdapServiceImpl implements LdapService {
 			}
 		} catch (Exception e) {
 		}
-		throw new RuntimeException("reset failed");
+		//throw new RuntimeException("reset failed");
 	}
 
 	@Override

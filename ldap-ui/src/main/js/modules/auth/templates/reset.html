@@ -99,19 +99,31 @@
 					<div class="form-group">
 						<input class="form-control" type="password" ng-disabled="reset.pw.progress < 100" placeholder="Repeat" ng-model="reset.pw.pw2" ng-change="reset.check(reset.pw)">
 					</div>
+				</div>
+				<div class="col-md-12" ng-if="reset.step == -1 || reset.step == -2">
 					<div class="form-group clearfix">
 						<div>
 							<div class="alert alert-info" ng-if="reset.step == -1">Please wait ... </div>
 							<div class="alert alert-danger" ng-if="reset.step == -2">Reset failed!</div>
 						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group clearfix">
 						<div class="float-right">
-							<a href="#/reset" class="btn btn-link" ng-click="reset.cancel()">
-								Cancel
-							</a>
 							<button class="btn btn-primary" ng-disabled="!reset.pw.ok" ng-click="reset.updatePassword()">
 								Update
 								<i class="fas fa-sign-in-alt"></i>
 							</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group clearfix">
+						<div class="float-right">
+							<a href="#/reset" class="text-reset fs-6" ng-click="reset.cancel()">
+								Cancel
+							</a>
 						</div>
 					</div>
 				</div>
