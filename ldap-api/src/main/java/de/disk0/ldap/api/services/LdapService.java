@@ -53,9 +53,17 @@ public interface LdapService {
 			String displayname, 
 			String email, 
 			String description, 
-			boolean setPassword, String pass1, String pass2) throws SqlException, LdapException;
+			boolean notify) throws SqlException, LdapException;
 
-	public LdapEntry create(String parentId, EntryType type, String name, String givenname,  String familyname,  String displayname, String email, String description, boolean setPassword, String pass1, String pass2) throws NotAuthorizedException, LdapException, AuthException, InvalidNameException, SqlException;
+	public LdapEntry create(
+			String parentId, EntryType type, 
+			String name, 
+			String givenname,  
+			String familyname,  
+			String displayname, 
+			String email, 
+			String description, 
+			boolean notify) throws NotAuthorizedException, LdapException, AuthException, InvalidNameException, SqlException;
 
 	public List<EntryAcl> listAcls(String id) throws SqlException, AuthException, LdapException;
 

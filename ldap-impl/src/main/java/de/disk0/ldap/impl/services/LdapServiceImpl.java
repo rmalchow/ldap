@@ -39,6 +39,7 @@ import de.disk0.ldap.api.entities.EntryAcl;
 import de.disk0.ldap.api.entities.EntryType;
 import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.LdapPermission;
+import de.disk0.ldap.api.entities.LdapType;
 import de.disk0.ldap.api.entities.Membership;
 import de.disk0.ldap.api.entities.ResetToken;
 import de.disk0.ldap.api.entities.query.EntryQuery;
@@ -53,6 +54,7 @@ import de.disk0.ldap.api.services.LdapRepository;
 import de.disk0.ldap.api.services.LdapService;
 import de.disk0.ldap.api.utils.AuthUtils;
 import de.disk0.ldap.api.utils.PasswordGenerator;
+import de.disk0.ldap.api.utils.TokenGenerator;
 import de.disk0.ldap.impl.services.repos.EntryAclRepo;
 import de.disk0.ldap.impl.services.repos.EntryRepo;
 import de.disk0.ldap.impl.services.repos.MembershipRepo;
@@ -169,7 +171,7 @@ public class LdapServiceImpl implements LdapService {
 			String displayname, 
 			String email, 
 			String description, 
-			boolean setPassword, String pass1, String pass2) throws SqlException, LdapException {
+			boolean notify) throws SqlException, LdapException {
 		List<Complaint> out = new ArrayList<Complaint>();
 		
 		LdapEntry e = getWithPermission(parentId, LdapPermission.CREATE);
@@ -205,20 +207,20 @@ public class LdapServiceImpl implements LdapService {
 			if(StringUtils.isEmpty(displayname)) {
 				out.add(new Complaint("LDAP.CREATE.DISPLAYNAME_REQUIRED"));
 			}
-			if(setPassword) {
-				if(pass1.length() < 8) {
-					out.add(new Complaint("LDAP.CREATE.PASSWORD_TOO_SHORT"));
-				} else if (pass1.equals(pass2)) {
-				} else {
-					out.add(new Complaint("LDAP.CREATE.PASSWORD_DONT_MATCH"));
-				}
-			}
 		}
 		return out;
 	}
 
 	@Override
-	public LdapEntry create(String parentId, EntryType type, String name,  String givenname,  String familyname, String displayname, String email, String description, boolean setPassword, String pass1, String pass2) throws LdapException, AuthException, InvalidNameException, SqlException {
+	public LdapEntry create(
+			String parentId, EntryType type, 
+			String name, 
+			String givenname, 
+			String familyname, 
+			String displayname, 
+			String email, 
+			String description, 
+			boolean notify) throws LdapException, AuthException, InvalidNameException, SqlException {
 		checkPermission(parentId, LdapPermission.CREATE);
 		
 		LdapEntry e = new LdapEntry();
@@ -234,13 +236,27 @@ public class LdapServiceImpl implements LdapService {
 		}
 		
 		e = ldapRepository.create(e, parentId);
+		e = saveInternal(e);
 		
-		
-		if(setPassword) {
-			ldapRepository.setPassword(e.getId(), pass1);
+		String pass = TokenGenerator.generate(12);
+
+		if(type==EntryType.USER) {
+			ldapRepository.setPassword(e.getId(), pass);
+			if(notify) {
+				try {
+					Map<String,Object> params = new HashMap<String, Object>();
+					params.put("token", pass);
+					params.put("user", update(e.getId()));
+					params.put("actor", SessionHolder.get());
+					mailService.sendMail(e.getEmail(), "main.newAccount", null, params);
+					
+				} catch (Exception e2) {
+					log.warn("error sending signup mail",e2);
+				}
+			}
 		}
 		
-		return saveInternal(e);
+		return e;
 	}
 
 	@Override

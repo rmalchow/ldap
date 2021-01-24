@@ -99,11 +99,9 @@ public class LdapController {
 			@RequestParam(required = false, defaultValue = "") String displayname,
 			@RequestParam(required = false, defaultValue = "") String email,
 			@RequestParam(required = false, defaultValue = "") String description,
-			@RequestParam(required = false, defaultValue = "false") boolean setPassword,
-			@RequestParam(required = false, defaultValue = "") String pass1,
-			@RequestParam(required = false, defaultValue = "") String pass2
+			@RequestParam(required = false, defaultValue = "false") boolean notify
 			)  throws Exception {
-		return ldapService.checkCreate(id,type,name,givenname,familyname,displayname,email,description,setPassword,pass1,pass2);
+		return ldapService.checkCreate(id,type,name,givenname,familyname,displayname,email,description,notify);
 	}
 
 	@PostMapping(value = "/{id}/create")
@@ -116,11 +114,9 @@ public class LdapController {
 			@RequestParam(required = false, defaultValue = "") String displayname,
 			@RequestParam(required = false, defaultValue = "") String email,
 			@RequestParam(required = false, defaultValue = "") String description,
-			@RequestParam(required = false, defaultValue = "false") boolean setPassword,
-			@RequestParam(required = false, defaultValue = "") String pass1,
-			@RequestParam(required = false, defaultValue = "") String pass2
+			@RequestParam(required = false, defaultValue = "false") boolean notify
 			)  throws Exception {
-		return ldapService.create(id,type,name,givenname, familyname, displayname,email,description,setPassword,pass1,pass2);
+		return ldapService.create(id,type,name,givenname, familyname, displayname,email,description,notify);
 	}
 	
 	@ResponseStatus(value = org.springframework.http.HttpStatus.NO_CONTENT)

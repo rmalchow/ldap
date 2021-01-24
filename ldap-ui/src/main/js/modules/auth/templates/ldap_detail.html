@@ -356,20 +356,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="row" ng-if="ldap.child.type == 'USER'">
-					<div class="col-4">
-						<div class="form-group">
-							<input type="checkbox" class="checkbox" ng-model="ldap.child.setPassword" ng-change="ldap.checkCreate(ldap.child)">  <label>Set Password</label>
-						</div>
-					</div>
-					<div class="col-4">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="please enter a password" ng-if="ldap.child.setPassword" ng-model="ldap.child.pass1" ng-change="ldap.checkCreate(ldap.child)">
-						</div>
-					</div>
-					<div class="col-4">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="please confirm password" ng-if="ldap.child.setPassword" ng-model="ldap.child.pass2" ng-change="ldap.checkCreate(ldap.child)">
+				<div class="row" ng-if="ldap.child.type == 'USER' && ldap.child.email">
+					<div class="col-12">
+						<div class="alert alert-info">
+							<input type="checkbox" class="checkbox" ng-model="ldap.child.notify" ng-change="ldap.checkCreate(ldap.child)">  Notify user
 						</div>
 					</div>
 				</div>
