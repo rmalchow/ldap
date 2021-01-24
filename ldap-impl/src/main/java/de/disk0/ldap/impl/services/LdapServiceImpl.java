@@ -422,18 +422,11 @@ public class LdapServiceImpl implements LdapService {
 	public User authenticate(String username, String password, List<String> groupIds) throws LdapException, AuthException {
 		log.info("ldap service: authenticating: "+username);
 		try {
-
-			LdapEntry e = entryRepo.getByUsername(username);
+			
+			LdapEntry e = ldapRepository.authenticate(username, password);
 			
 			if(e == null) {
-				log.info("ldap service: authenticating: user is null!");
-				throw new NotAuthenticatedException();
-			}
-			
-			e = ldapRepository.authenticate(e.getName(), password);
-			
-			if(e == null) {
-				log.info("ldap service: authenticating: user is null!");
+				log.info("ldap service: authenticating: user is null! ("+username+"/"+password+")");
 				throw new NotAuthenticatedException();
 			}
 			

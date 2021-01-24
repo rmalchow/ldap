@@ -128,8 +128,6 @@ public class ApacheDsLdapRepository implements LdapRepository {
 		le.setFamilyname(getAttribute(e, "sn"));
 		le.setGivenname(getAttribute(e, "givenname"));
 		
-		System.err.println(" ====> "+le.getEmail()+" / "+getAttribute(e, "mail"));
-		
 		le.setPath(getPath(le.getId()));
 		
 		if(e.getDn().isRootDse()) {
