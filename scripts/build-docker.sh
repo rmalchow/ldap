@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
-echo "build docker image ... " 
-#export TAG=docker.sly.io/${CI_PROJECT_PATH}/ldap
-docker build -t rmalchow/ldap:latest -f scripts/Dockerfile .
-#docker push ${TAG}
-echo "push docker image ... " 
-docker login -u "${DH_USER}" -p "${DH_PW}"
-docker push rmalchow/ldap:latest
+export TAG=harbor.rand0m.me/public/${CI_PROJECT_NAME}:latest
+docker login -u ${CI_EMAIL} -p ${CI_PASSWORD} harbor.rand0m.me
+docker build -t ${TAG} -f scripts/Dockerfile .
+docker push ${TAG}
+docker tag ${TAG} rmalchow/${CI_PROJECT_NAME}:latest
+docker push rmalchow/${CI_PROJECT_NAME}:latest
