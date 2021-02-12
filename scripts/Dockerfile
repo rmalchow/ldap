@@ -1,4 +1,4 @@
-FROM harbor.rand0m.me/public/springboot:latest-alpine
+FROM harbor.rand0m.me/public/springboot:latest
 MAINTAINER Ruben Malchow <ruben.malchow@gmail.com>
 COPY ldap-app/target/ldap-app.jar ldap-app.jar
 COPY ldap-app/config/application* /app/
