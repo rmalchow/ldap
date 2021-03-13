@@ -10,7 +10,7 @@ cache:
 
 build-jar:
   stage: maven
-  image: harbor.cloudpowered.services/mcon-group-public/centos8-base:latest
+  image: harbor.rand0m.me/public/centos8-base:latest
   tags: 
   - docker
   script:
