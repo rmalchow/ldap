@@ -22,6 +22,14 @@ so, this is for you if
 
 i am planning to (eventually) include a bit more advanced functionality for editing LDAP objects, but this is never going to be THAT big (if you have urges, try FreeIPA or Keycloak or Privacy Idea). 
 
+### Some Screenshots
+
+![login_screen](docs/images/login_screen.png)
+
+![login_screen](docs/images/tree.png)
+
+![login_screen](docs/images/group-users.png)
+
 ## Installation
 
 this can be run in different ways.
