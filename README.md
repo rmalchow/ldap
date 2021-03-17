@@ -1,6 +1,6 @@
 ## What this IS
 
-this application is a small and simple UI to manage a basic LDAP setup. it currently works with 389ds, and it can do basic user and group management tasks. it also allows you to delegate certain things (e.g. manage users of one group) without dealing with LDAP ACLs.
+this application is a small and simple UI to manage a basic LDAP setup. it currently works with an embedded Apache DS, and it can do basic user and group management tasks. it also allows you to delegate certain things (e.g. manage users of one group) without dealing with LDAP ACLs.
 
 behind the scenes, all LDAP operations are executed by a single user, which will need extensive privileges. in the example setup, this is `cn=Directory Manager`, but you can create your own user if you want.
 
@@ -32,20 +32,6 @@ this can be run in different ways.
 
 the easiest way to run is the third one, you can check out the examples folder for a basic setup.
 
----
-
-**Attention (a)** - the 389 image's init script does turn on the memberOf plugin. this is needed for proper operation. however, it is not actually loaded until the next restart. if you use the script from the examples folder, make sure you restart the 389 container before doing anything else.
-
----
-
-**Attention (b)** - with the launch script in examples, a user with ui "admin" and the password given in DIRSRV_ADMIN_PASS is created. you can use this for your first login. in all other scenarios, the *FIRST USER* that logs into the UI with a correct uid / password will become the first admin in the UI.
-
-----
-
-**Attention (c)** - please make sure you double-check the port mappings and adjust them to your needs.
-
----
-
 ## Environment Variables, Directories, Ports
 
 ### LDAP container
@@ -74,46 +60,6 @@ the easiest way to run is the third one, you can check out the examples folder f
 | MAIL_USER       |                        | username for the SMTP server                                 |
 | MAIL_PASSWORD   |                        | password for the SMTP server                                 |
 | MAIL_SENDER     |                        | email adress to use for SMTP envelope and reply-to headers   |
-
-### 389DS Container
-
-- container ports **3389** and **3636**
-- one volume needed on **/data**
-
-These values are only read on first boot. Once the data dir is populated, these are ignored. However, on first boot, they are **REQUIRED**
-
-##### Connection to the 389 
-
-If you need to do any maintenance or setup, or if you just want to check what's going on inside the LDAP server, you may have to connect to it directly. my tool of choice for this is **apache directory studio**, and the connection settings should be:
-
-- ldap://{you_ldap_host}:{your_ldap_port}
-- username: "cn=Directory Manager"
-- password: *as defined on first boot* 
-
-you can then perform administrative tasks on the LDAP server (such as extended aci configuration).
-
-##### ACIs in the 389 container
-
-the init script will set up a number of default acis on the root entry. these aci may or may not have to be modified by you:
-
-- `(targetattr="*")(version 3.0; acl "Admin all"; allow (all) userdn="ldap:///$DN_OF_ADMIN";)` - after the admin is created, an "all access" aci rule is defined. this is so that the admin user can also be used ad the LDAP UI user
-- `(targetattr="*")(version 3.0; acl "bind users can read/search"; allow (read,search) userdn="ldap:///uid=*-bind-user,*";)` - this rule allows any uid that ends in "-bind-user" more privileges. this is so that other applications can use this type of uid to search for users in the tree
-- `(targetattr="*")(version 3.0; acl "Read self"; allow (read,search,compare) userdn="ldap:///self";)` - this rule is set up so that each user can find itself. 
-
-Documentation on the format of these acis is pretty sparse ... but you might have to deal with this at some point if you want to make the most of it. not very much, though
-
-----
-
-**Attention** - occasionally, if the container is not shut down properly, you may have to delete the slapd pid in `$DATA_DIR/run/`
-
-----
-
-| Name              | Description                                        | Example          |
-| ----------------- | -------------------------------------------------- | ---------------- |
-| DIRSRV_DOMAIN     | name of backend and top level entry. without "dc=" | example.com      |
-| DIRSRV_ORG        | the top level "org" entry, without "o="            | example corp ltd |
-| DIRSRV_MGMT_PASS  | password for the Directory Manager account         |                  |
-| DIRSRV_ADMIN_PASS | password for the LDAP UI admin user account        |                  |
 
 ### MariaDB container
 

@@ -1,0 +1,27 @@
+version: "2"
+networks:
+  default:
+    external:
+      name: "ldap"
+services:
+  ldap:
+    image: harbor.rand0m.me/public/ldap
+    restart: always
+    volumes:
+     - ${home}/ldap-ldap-data:/app/data
+    env_file:
+     - ${home}/ldap.env
+    depends_on:
+      - ldap-mysql
+    ports:
+    - 389:389
+    - 8080:8080
+    mem_limit: 384m
+  ldap-mysql:
+    image: mariadb:latest
+    restart: always
+    mem_limit: 128m
+    volumes:
+     - ${home}/ldap-mysql-data:/var/lib/mysql
+    env_file:
+     - ${home}/ldap.env
