@@ -24,9 +24,21 @@ i am planning to (eventually) include a bit more advanced functionality for edit
 
 ### Some Screenshots
 
+
+
+#### Login Screen
+
 ![login_screen](docs/images/login_screen.png)
 
+
+
+#### View LDAP Tree Structure
+
 ![login_screen](docs/images/tree.png)
+
+
+
+#### Edit Group Members
 
 ![login_screen](docs/images/group-users.png)
 
