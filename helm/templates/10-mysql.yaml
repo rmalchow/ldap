@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ .Release.Name }}-ldap-mariadb"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-ldap-mariadb"
+      release: {{ .Release.Namespace }}-{{ .Release.Name }}
+  serviceName: "{{ .Release.Name }}-ldap-mariadb"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}-ldap-mariadb"
+        release: {{ .Release.Namespace }}-{{ .Release.Name }}
+      name: "{{ .Release.Name }}-ldap-mariadb"
+    spec:
+      initContainers:
+      - name: volume-permissions
+        image: centos:8
+        command: ['bash', '-c', 'chmod -R 777 /var/lib/mysql']
+        volumeMounts:
+        - name: storage-mariadb
+          mountPath: /var/lib/mysql
+          subPath: ""
+      containers:
+        - name: {{ .Release.Name }}-ldap-mariadb
+          image: mariadb:10
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: MYSQL_DATABASE
+              value: "ldap"
+            - name: MYSQL_USER
+              value: "ldap"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-ldap-secrets
+                  key: mysql_user_password
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-ldap-secrets
+                  key: mysql_root_password
+          volumeMounts:
+          - name: storage-mariadb
+            mountPath: /var/lib/mysql
+            subPath: ""
+      volumes:
+        - name: storage-mariadb
+          persistentVolumeClaim:
+            claimName: storage-mariadb
+  volumeClaimTemplates:
+  - metadata:
+      name: storage-mariadb
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10G
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-ldap-mariadb"
+spec:
+  ports:
+  - name: mariadb
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: "{{ .Release.Name }}-ldap-mariadb"
+    release: {{ .Release.Namespace }}-{{ .Release.Name }}
+  sessionAffinity: None

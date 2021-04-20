@@ -1,0 +1,15 @@
+ldap-auth:
+  hostname: users.example.com
+  name: "test ldap"
+  root: "DC=example,DC=com"
+  org: "example"
+  ingress:
+    enabled: True
+  mail:
+    enabled: True
+    host: 127.0.0.1
+    port: 25
+    sender: me@example.com
+    username: smtp-user
+    password: smtp-password
+    starttls: True

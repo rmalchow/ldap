@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ .Release.Name }}-ldap-ldap"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-ldap-ldap"
+      release: {{ .Release.Namespace }}-{{ .Release.Name }}
+  serviceName: "{{ .Release.Name }}-ldap-ldap"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}-ldap-ldap"
+        release: {{ .Release.Namespace }}-{{ .Release.Name }}
+      name: "{{ .Release.Name }}-ldap-ldap"
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-ldap-ldap
+          image: rmalchow/ldap
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: MYSQL_HOST
+              value: "{{ .Release.Name }}-ldap-mariadb"
+            - name: MYSQL_DATABASE
+              value: "ldap"
+            - name: MYSQL_USER
+              value: "ldap"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-ldap-secrets
+                  key: mysql_user_password
+            - name: LDAP_ADMIN_PW
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-ldap-secrets
+                  key: admin_password
+            - name: NAME
+              value: {{ .Values.ldap.name | quote }}
+            - name: URL
+              value: "https://{{ .Values.ldap.hostname }}"
+            - name: LDAP_ROOT_DN
+              value: {{ .Values.ldap.root | quote }}
+            - name: LDAP_ORG
+              value: {{ .Values.ldap.org | quote }}
+          volumeMounts:
+          - name: storage-ldap
+            mountPath: /app/data
+            subPath: ""
+      volumes:
+        - name: storage-ldap
+          persistentVolumeClaim:
+            claimName: storage-ldap
+  volumeClaimTemplates:
+  - metadata:
+      name: storage-ldap
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10G
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-ldap-service"
+spec:
+  ports:
+  - name: ldap
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: "{{ .Release.Name }}-ldap-ldap"
+    release: {{ .Release.Namespace }}-{{ .Release.Name }}
+  sessionAffinity: None
