@@ -49,6 +49,21 @@ spec:
               value: {{ .Values.ldap.root | quote }}
             - name: LDAP_ORG
               value: {{ .Values.ldap.org | quote }}
+            {{- if .Values.ldap.mail.enabled }}
+            - name: MAIL_HOST
+              value: {{ .Values.ldap.mail.host | quote }}
+            - name: MAIL_PORT
+              value: {{ .Values.ldap.mail.port | quote }}
+            - name: MAIL_SENDER
+              value: {{ .Values.ldap.mail.sender | quote }}
+            - name: MAIL_USERNAME
+              value: {{ .Values.ldap.mail.username | quote }}
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-ldap-secrets
+                  key: mail_password
+            {{- end }}
           volumeMounts:
           - name: storage-ldap
             mountPath: /app/data
