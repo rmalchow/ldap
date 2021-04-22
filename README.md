@@ -2,7 +2,7 @@
 
 this application is a small and simple UI to manage a basic LDAP setup. it currently works with an embedded Apache DS, and it can do basic user and group management tasks. it also allows you to delegate certain things (e.g. manage users of one group) without dealing with LDAP ACLs.
 
-behind the scenes, all LDAP operations are executed in an administrative session, which has extensive privileges. 
+behind the scenes, all LDAP operations are executed in an administrative session, which has extensive privileges.
 
 this application also ignores a lot of the finer points of LDAP, painting objects with rather coarse strokes. this may or may not be to your liking. For my personal usage, this is actually perfectly fine.
 
@@ -52,11 +52,51 @@ this is meant to be run as a springboot application inside a docker container. i
 
 ​		rmalchow/ldap:latest
 
-this needs one volume mounted for the LDAP datafiles. It also needs a MariaDB configured. 
+this needs one volume mounted for the LDAP datafiles. It also needs a MariaDB configured.
 
 #### Docker Compose / Helm
 
-An example docker compose file as well as a helm chart can be found in this repo. 
+An example docker compose file as well as a helm chart can be found in this repo.
+
+**Env vars for use with docker compose**
+
+| key | value |
+| ------- | ------------ |
+| URL|"https://users.example.com" |
+| NAME | "Example LDAP"|
+| MYSQL_HOST | "ldap-mysql"|
+| MYSQL_PORT | 3306|
+| MYSQL_ROOT_PASSWORD | "mysql_root_pw"|
+| MYSQL_DATABASE | "ldap"|
+| MYSQL_USER | "ldap"|
+| MYSQL_PASSWORD | "mysql_user_pw"|
+| LDAP_ROOT_DN | "dc=ldap.example.com"|
+| LDAP_ORG | "example-org"|
+| LDAP_ADMIN_PW | "admin_pw"|
+| MAIL_SENDER | "me@example.com"|
+| MAIL_USER | "me-example.com@smtp.server"|
+| MAIL_PASSWORD | "smtp_pw"|
+| MAIL_HOST | "mail.example.com"|
+| MAIL_PORT | 587|
+
+
+
+
+**Values for user with HELM**
+
+| value               | description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| ldap.hostname       | hostname of the instance for use in http URLs, e.g. "ldap.example.com" |
+| ldap.name           | name of the instance, e.g. "Foobar User Management"          |
+| ldap.root           | root of the LDAP tree, e.g. "dc=example,dc=com"              |
+| ldap.org            | initial "organization" in the ldap tree, e.g. "foo" (will result in "o=foo,dc=example,dc=com") |
+| ldap.admin_password | password of admin user                                       |
+| ldap.mail.enabled   | en- or disable mailing                                       |
+| ldap.mail.host      | SMTP host                                                    |
+| ldap.mail.port      | SMTP port (defaults to 25)                                   |
+| ldap.mail.sender    | sender for the SMTP envelope                                 |
+| ldap.mail.username  | username for authenticated SMTP (defaults to empty - no authentication) |
+| ldap.mail.password  | password for authenticated SMTP (defaults to empty - no authentication) |
 
 
 
