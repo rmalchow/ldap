@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import de.disk0.dbutil.api.Comparator;
-import de.disk0.dbutil.api.Condition;
 import de.disk0.dbutil.api.JoinTable;
 import de.disk0.dbutil.api.Operator;
 import de.disk0.dbutil.api.Select;
@@ -26,8 +25,8 @@ import de.disk0.dbutil.api.exceptions.SqlException;
 import de.disk0.dbutil.impl.AbstractGuidRepository;
 import de.disk0.dbutil.impl.SimpleQuery;
 import de.disk0.dbutil.impl.mysql.MysqlStatementBuilder;
-import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.EntryAcl;
+import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.LdapPermission;
 
 @Component

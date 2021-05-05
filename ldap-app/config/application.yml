@@ -15,7 +15,7 @@ spring.mail.port: ${MAIL_PORT:25}
 spring.mail.sender: ${MAIL_SENDER:me@example.com}
 spring.mail.username: ${MAIL_USER:} 
 spring.mail.password: ${MAIL_PASSWORD:}
-spring.mail.properties.mail.smtp.starttls.enable: true
+spring.mail.properties.mail.smtp.starttls.enable: ${MAIL_STARTTLS:true}
 
 ldap.config.name: ${NAME:test ldap (local)}
 ldap.config.url: ${URL:http://127.0.0.1:8080}

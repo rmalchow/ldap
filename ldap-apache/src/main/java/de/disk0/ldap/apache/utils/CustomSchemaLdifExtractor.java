@@ -21,29 +21,16 @@ package de.disk0.ldap.apache.utils;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InvalidObjectException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Stack;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.directory.api.i18n.I18n;
-import org.apache.directory.api.ldap.model.constants.SchemaConstants;
-import org.apache.directory.api.ldap.model.exception.LdapException;
-import org.apache.directory.api.ldap.model.ldif.LdapLdifException;
-import org.apache.directory.api.ldap.model.ldif.LdifEntry;
-import org.apache.directory.api.ldap.model.ldif.LdifReader;
 import org.apache.directory.api.ldap.schema.extractor.SchemaLdifExtractor;
 import org.apache.directory.api.ldap.schema.extractor.UniqueResourceException;
-import org.apache.directory.api.ldap.schema.extractor.impl.ResourceMap;
 import org.apache.directory.api.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

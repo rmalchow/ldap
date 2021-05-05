@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.disk0.dbutil.api.exceptions.SqlException;
 import de.disk0.ldap.api.entities.Complaint;
-import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.EntryAcl;
 import de.disk0.ldap.api.entities.EntryType;
+import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.LdapPermission;
 import de.disk0.ldap.api.entities.query.EntryQuery;
 import de.disk0.ldap.api.exceptions.AuthException;

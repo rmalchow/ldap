@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import de.disk0.dbutil.impl.AbstractGuidRepository;
 import de.disk0.dbutil.impl.SimpleQuery;
-import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.GlobalAdmin;
+import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.session.User;
 
 @Component

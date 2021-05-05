@@ -307,7 +307,6 @@ public class ApacheDsLdapRepository implements LdapRepository {
 		List<Modification> out = new ArrayList<Modification>();
 		try {
 			Attribute ex = e.get(att);
-			ModificationOperation op = null;
 			if(StringUtils.isEmpty(value)) value = null;
 			if(value!=null) {
 				if(ex==null) {
@@ -515,7 +514,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 			CoreSession cs = embeddedADS.getAdminSession();
 
 			Attribute a = group.get("member");
-			if(a!=null || !a.contains(user.getDn().toString())) {
+			if(a!=null && !a.contains(user.getDn().toString())) {
 				a.remove(user.getDn().toString());
 				if(a.size()==0) {
 					log.info("ldap repo: removeMember: remove member attribute!");

@@ -27,19 +27,12 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import de.disk0.dbutil.api.Comparator;
-import de.disk0.dbutil.api.Condition;
-import de.disk0.dbutil.api.Operator;
-import de.disk0.dbutil.api.Select;
-import de.disk0.dbutil.api.TableReference;
 import de.disk0.dbutil.api.exceptions.SqlException;
-import de.disk0.dbutil.impl.mysql.MysqlStatementBuilder;
 import de.disk0.ldap.api.entities.Complaint;
 import de.disk0.ldap.api.entities.EntryAcl;
 import de.disk0.ldap.api.entities.EntryType;
 import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.LdapPermission;
-import de.disk0.ldap.api.entities.LdapType;
 import de.disk0.ldap.api.entities.Membership;
 import de.disk0.ldap.api.entities.ResetToken;
 import de.disk0.ldap.api.entities.query.EntryQuery;
@@ -471,7 +464,7 @@ public class LdapServiceImpl implements LdapService {
 		try {
 			checkPermission(id, LdapPermission.READ);
 			LdapEntry e = getWithPermission(id, LdapPermission.READ);
-			List<Membership> members = membershipRepo.list(id, null);
+			List<Membership> members = membershipRepo.list(e.getId(),null);
 			if (members.size()==0) return new ArrayList<LdapEntry>();
 
 			List<String> entryIds = new ArrayList<String>();

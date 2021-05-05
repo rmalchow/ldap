@@ -26,8 +26,8 @@ import de.disk0.dbutil.api.exceptions.SqlException;
 import de.disk0.dbutil.impl.AbstractGuidRepository;
 import de.disk0.dbutil.impl.SimpleQuery;
 import de.disk0.dbutil.impl.mysql.MysqlStatementBuilder;
-import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.EntryType;
+import de.disk0.ldap.api.entities.LdapEntry;
 import de.disk0.ldap.api.entities.LdapPermission;
 import de.disk0.ldap.api.entities.query.EntryQuery;
 
