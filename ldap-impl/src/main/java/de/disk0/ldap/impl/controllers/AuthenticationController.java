@@ -1,6 +1,7 @@
 package de.disk0.ldap.impl.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -103,8 +104,20 @@ public class AuthenticationController {
 		if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
 			user = ldapService.update(user.getId());
 		} else {
-			user = ldapService.authenticate(username, password, groupId); 
+			// to allow comma-separated lists 
+			List<String> gId = new ArrayList<String>();
+			if(groupId!=null) {
+				for(String gs : groupId) {
+					for(String g : gs.split(",")) {
+						if(g.trim().length() == 0) continue;
+						gId.add(g);
+					}
+				}
+			}
+			user = ldapService.authenticate(username, password, gId); 
 		}
+		
+		
 		log.info("after auth - user is: "+user);
 		write(response, user);
 		return user; 
