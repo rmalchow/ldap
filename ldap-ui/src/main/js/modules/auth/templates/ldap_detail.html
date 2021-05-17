@@ -444,26 +444,21 @@
 		</tr>
 	</table>
 </div>
-
-<div class="col-md-12" ng-if="!ldap.entry.system && ldap.permissions.includes('ADMIN')">
+<div class="col-md-12" ng-if="ldap.permissions.includes('DELETE')">
 	<h4>
 		Danger Zone
 	</h4>
 	<div class="input-group">
-		<input class="form-control" placeholder="Enter object name to unlock" ng-disabled="ldap.dangerZoneUnlocked" ng-model="ldap.nameToUnlock">
+		<input class="form-control" placeholder="Enter object name to delete" ng-disabled="ldap.deleteSuccess" ng-model="ldap.nameToUnlock">
 		<div class="input-group-append">
-			<button class="btn btn-primary">
-				<i class="fas fa-plus-square" ng-if="ldap.nameToUnlock == ldap.entry.displayname && !ldap.dangerZoneUnlocked" ng-click="ldap.dangerZoneUnlocked = true"></i> 
-				<i class="fas fa-minus-square" ng-if="ldap.nameToUnlock == ldap.entry.displayname && ldap.dangerZoneUnlocked" ng-click="ldap.dangerZoneUnlocked = false; ldap.nameToUnlock = '';"></i> 
-				<i class="fas fa-lock" ng-if="ldap.nameToUnlock != ldap.entry.displayname"></i>  
+			<button 
+				class="btn" 
+				ng-class="{'btn-primary' : ldap.deleteSuccess == 0, 'btn-success' : ldap.deleteSuccess == 1, 'btn-danger' : ldap.deleteSuccess == 2}"  
+				ng-disabled="ldap.nameToUnlock != ldap.entry.displayname || ldap.deleteSuccess==-1" ng-click="ldap.delete()">
+				<i class="fas fa-trash" ></i>
 			</button>
 		</div>
 	 </div>
-</div>
-<div class="col-md-12" ng-if="ldap.dangerZoneUnlocked">
-	RENAME <br>
-	DELETE <br>
-	... and other dangerous operations are hidden here.
 </div>
 <div class="col-md-12">
 	<!--  dome padding -->

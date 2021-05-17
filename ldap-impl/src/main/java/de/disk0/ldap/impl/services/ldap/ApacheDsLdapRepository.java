@@ -354,6 +354,12 @@ public class ApacheDsLdapRepository implements LdapRepository {
 
 	@Override
 	public void delete(String id) throws LdapException {
+		try {
+			LdapEntry le = getById(id);
+			embeddedADS.getAdminSession().delete(new Dn(le.getDn()));
+		} catch (Exception e) {
+			throw new LdapException("LDAP_DELETE_FALED", "delete failed", e);
+		}
 	}
 
 	@Override

@@ -71,6 +71,11 @@ public class LdapController {
 		return ldapService.save(entry);
 	}
 	
+	@DeleteMapping(value = "/{id}")
+	public void delete(@PathVariable String id)  throws Exception {
+		ldapService.delete(id);
+	}
+	
 	@ResponseStatus(value = org.springframework.http.HttpStatus.NO_CONTENT)
 	@PutMapping(value = "/{id}/password")
 	public void setPassword(@PathVariable String id, @RequestParam(required = false) String oldPassword, @RequestParam(required = false) String newPassword)  throws Exception {

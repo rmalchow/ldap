@@ -24,7 +24,7 @@ public interface LdapService {
 	public List<LdapEntry> list(EntryQuery eq) throws LdapException, AuthException;
 
 	public LdapEntry save(LdapEntry e) throws LdapException, AuthException, SqlException, InvalidNameException;
-	public void delete(LdapEntry e) throws LdapException, AuthException;
+	public void delete(LdapEntry e) throws LdapException, AuthException, SqlException;
 
 	public LdapEntry move(String entry, String toParent) throws Exception;
 
@@ -72,7 +72,10 @@ public interface LdapService {
 	public void deleteAcl(String entryId, String aclId) throws SqlException, AuthException;
 	
 	public void reset(String username);
+	
 	public void updatePassword(String newPassword) throws NotAuthorizedException, SqlException, LdapException;
+	
+	public void delete(String id) throws LdapException, AuthException, SqlException;
 
 	
 }

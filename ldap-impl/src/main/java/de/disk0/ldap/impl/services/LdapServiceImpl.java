@@ -338,10 +338,24 @@ public class LdapServiceImpl implements LdapService {
 		return saveInternal(e);
 	}
 
-	public void delete(LdapEntry e) throws LdapException, AuthException {
-		// TODO Auto-generated method stub
+	public void delete(LdapEntry e) throws LdapException, AuthException, SqlException {
+		checkPermission(e.getId(), LdapPermission.DELETE);
+		EntryQuery eq = new EntryQuery();
+		eq = eq.setParentId(e.getId());
+		List<LdapEntry> children = entryRepo.list(eq);
+		if(children.size()>0) {
+			throw new LdapException("LDAP_NOT_EMPTY", "this obect has children. please delete the child objects first", null);
+		}
+		ldapRepository.delete(e.getId());
+		entryRepo.delete(e.getId());
+		
 	}
 
+	@Override
+	public void delete(String id) throws LdapException, AuthException, SqlException {
+		delete(get(id));
+	}
+	
 	@Override
 	public void ignore(String id, boolean ignore) throws LdapException, AuthException {
 		try {

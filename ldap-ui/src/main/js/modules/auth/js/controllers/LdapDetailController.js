@@ -4,6 +4,8 @@ angular.module("rooster").controller(
 
 		var ldap = this;
 
+		ldap.deleteSuccess = 0;
+
 		ldap.updateChildrenInternal = function() {
 			LdapService.list({parentId:ldap.id,permission:"READ", filter: ldap.childFilter}, function(children) { ldap.children = children; });
 		}
@@ -48,6 +50,23 @@ angular.module("rooster").controller(
 			);
 		}
 		
+		ldap.delete = function() {
+			console.log("deleting: "+ldap.id);
+			id = ldap.entry.parentId;
+			ldap.deleteSuccess = -1;
+			LdapService.delete(ldap.id, function() {
+				ldap.deleteSuccess = 1;
+				$timeout(function() {
+					ldap.open(id);
+				}, 3000);
+			}, function() {
+				ldap.deleteSuccess = 2;
+				$timeout(function() {
+					ldap.deleteSuccess = 0;
+				},3000);
+			});
+		}
+		
 		ldap.update = function() {
 			console.log("ldap user list controller: update()");
 			ldap.entries = undefined;
@@ -80,6 +99,8 @@ angular.module("rooster").controller(
 		}
 		
 		ldap.self = false;
+		
+		
 		
 		
 		ldap.open = function(id) {

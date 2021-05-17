@@ -71,6 +71,11 @@ angular.module("rooster").factory(
 			);
 		}
 
+		s.delete = function(id, success, error) {
+			console.log("[service] deleting "+id);
+			Restangular.one("api/ldap/entries",id).customDELETE().then(success,error);
+		}
+
 		s.moveTo = function(entryId,newParentId,success,error) {
 			console.log("[service] move "+entryId+" to: "+newParentId);
 			Restangular.one("api/ldap/entries",entryId).one("move").customPOST({},"",{newParentId:newParentId}).then(
