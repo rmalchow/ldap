@@ -449,7 +449,7 @@
 		Danger Zone
 	</h4>
 	<div class="input-group">
-		<input class="form-control" placeholder="Enter object name to delete" ng-disabled="ldap.deleteSuccess" ng-model="ldap.nameToUnlock">
+		<input class="form-control" placeholder="Enter '{{ldap.entry.displayname}}' to enabled the delete button" ng-disabled="ldap.deleteSuccess" ng-model="ldap.nameToUnlock">
 		<div class="input-group-append">
 			<button 
 				class="btn" 
