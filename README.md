@@ -6,6 +6,12 @@ behind the scenes, all LDAP operations are executed in an administrative session
 
 this application also ignores a lot of the finer points of LDAP, painting objects with rather coarse strokes. this may or may not be to your liking. For my personal usage, this is actually perfectly fine.
 
+---
+
+people who user this also user: my auth proxy - check it out [here](https://github.com/rmalchow/auth-proxy) 
+
+---
+
 
 
 ## What this is NOT

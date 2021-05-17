@@ -105,16 +105,16 @@ public class AuthenticationController {
 			user = ldapService.update(user.getId());
 		} else {
 			// to allow comma-separated lists 
-			List<String> gId = new ArrayList<String>();
+			List<String> gIds = new ArrayList<String>();
 			if(groupId!=null) {
 				for(String gs : groupId) {
 					for(String g : gs.split(",")) {
 						if(g.trim().length() == 0) continue;
-						gId.add(g);
+						gIds.add(g);
 					}
 				}
 			}
-			user = ldapService.authenticate(username, password, gId); 
+			user = ldapService.authenticate(username, password, gIds); 
 		}
 		
 		
