@@ -253,8 +253,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 	}
 
 	@Override
-	public LdapEntry create(LdapEntry e, String parentId) throws LdapException {
-
+	public synchronized LdapEntry create(LdapEntry e, String parentId) throws LdapException {
 		CoreSession cs = embeddedADS.getAdminSession();
 		try {
 			Entry ee = new DefaultEntry();
@@ -353,7 +352,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 	}
 
 	@Override
-	public void delete(String id) throws LdapException {
+	public synchronized void delete(String id) throws LdapException {
 		try {
 			LdapEntry le = getById(id);
 			embeddedADS.getAdminSession().delete(new Dn(le.getDn()));
@@ -363,7 +362,7 @@ public class ApacheDsLdapRepository implements LdapRepository {
 	}
 
 	@Override
-	public LdapEntry move(String id, String newParent) throws Exception {
+	public synchronized LdapEntry move(String id, String newParent) throws Exception {
 		
 		log.info("moving entry [entry: "+id+", new parent: "+newParent+"]");
 		
