@@ -15,6 +15,7 @@ angular.module("rooster").factory(
 			
 			Restangular.all("api/authenticate").customPOST().then(
 				function(u) {
+					$rootScope.$broadcast("auth");
 					console.log("authentication service renew(): finished: ",u);
 					var c = JSON.stringify(u);
 					if(!u.id) {
@@ -81,6 +82,7 @@ angular.module("rooster").factory(
 		s.logout = function() {
 			Restangular.all("api/authenticate").customDELETE().then(
 				function() {
+					s.renew();
 					$location.path("/login");
 				},
 				function() {

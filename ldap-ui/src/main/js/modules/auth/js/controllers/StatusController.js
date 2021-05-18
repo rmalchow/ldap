@@ -12,6 +12,7 @@ angular.module("rooster").controller(
 		
 		status.logout = function() {
 			AuthenticationService.logout();
+			status.user = undefined;
 		}
 		
 		$rootScope.$on("auth", status.update);

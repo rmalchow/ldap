@@ -1,19 +1,14 @@
 [
 {
-
 	"file" :  "img066_tuer_b_small_lq.jpg",
 	"author" : "Ruben Malchow",
-	"title" : "Hepingli, downstairs in area 10 (2016)",
-	"width" : 1579,
-	"height" : 2000
+	"title" : "Hepingli, downstairs in area 10 (2016)"
 },
 {
 
 	"file" :  "img066_tuer_b_lq.jpg",
 	"author" : "Ruben Malchow",
-	"title" : "Hepingli, downstairs in area 11 (2016)", 
-	"width" : 2000,
-	"height" : 1864
+	"title" : "Hepingli, downstairs in area 11 (2016)"
 	
 },
 {
@@ -21,82 +16,81 @@
 	"file" :  "254634399_1a0d361e2a_o.jpg",
 	"author" : "Taz",
 	"title" : "Door", 
-	"link" : "https://flickr.com/photos/sporkist/", 
-	"width" : 2048,
-	"height" : 1365
+	"link" : "https://flickr.com/photos/sporkist/"
 },
 {
 
 	"file" :  "7142946747_9ab99914df_o.jpg",
 	"author" : "Givingnot",
 	"title" : "Door", 
-	"link" : "https://flickr.com/photos/57474170@N05/", 
-	"width" : 4000,
-	"height" : 3000
+	"link" : "https://flickr.com/photos/57474170@N05/"
 },
 {
 
 	"file" :  "28605378394_814f06fec1_o.jpg",
 	"author" : "Bernadett Sóky",
 	"title" : "Door", 
-	"link" : "https://flickr.com/photos/146415945@N04/", 
-	"width" : 4754,
-	"height" : 3157
+	"link" : "https://flickr.com/photos/146415945@N04/"
 },
 {
 
 	"file" :  "15961049998_a59c603383_o.jpg",
 	"author" : "Adrian Midgley",
 	"title" : "Door", 
-	"link" : "https://flickr.com/photos/146415945@N04/", 
-	"width" : 2736,
-	"height" : 3648
+	"link" : "https://flickr.com/photos/146415945@N04/"
 },
 {
 
 	"file" :  "7590905478_b117781764_o.jpg",
 	"author" : "Astrid Westvang",
 	"title" : "Door", 
-	"link" : "https://flickr.com/photos/midgley/", 
-	"width" : 4678,
-	"height" : 3264
+	"link" : "https://flickr.com/photos/midgley/"
 },
 {
 
 	"file" :  "5553599546_ed8c9d5968_o.jpg",
 	"author" : "Tim Green",
 	"title" : "Red Door, Horting Street, Hailfax", 
-	"link" : "https://flickr.com/photos/atoach/", 
-	"width" : 1937,
-	"height" : 2324
+	"link" : "https://flickr.com/photos/atoach/"
 },
 {
 
 	"file" :  "15824520219_c7cb594ef2_o.jpg",
 	"author" : "Silvia Sala",
 	"title" : "Shanghai", 
-	"link" : "https://flickr.com/photos/shitsuren/", 
-	"width" : 3734,
-	"height" : 2490
+	"link" : "https://flickr.com/photos/shitsuren/"
 },
 {
 
 	"file" :  "5663167589_e16c1b79b4_o.jpg",
 	"author" : "Mitch Altman",
 	"title" : "Door, Beijing, April 2011", 
-	"link" : "https://flickr.com/photos/maltman23/", 
-	"width" : 1328,
-	"height" : 2000
-},
-{
+	"link" : "https://flickr.com/photos/maltman23/"
+},{
 
 	"file" :  "7739966376_1f08741c32_o.jpg",
 	"author" : "is",
 	"title" : "doors", 
-	"link" : "https://flickr.com/photos/58231478@N00/", 
-	"width" : 1500,
-	"height" : 1007
+	"link" : "https://flickr.com/photos/58231478@N00/"
+},{
+
+	"file" :  "5275255840_7cbfb47b9a_o.jpg",
+	"author" : "Veronica Jauriqi",
+	"title" : "Chinese Door", 
+	"link" : "https://www.flickr.com/photos/veronicajauriqui/"
+},{
+
+	"file" :  "6124041465_0ffec7a763_o.jpg",
+	"author" : "Felix Melach",
+	"title" : "DSC_5277", 
+	"link" : "https://www.flickr.com/photos/felix_melach/"
+},{
+	"file": "3779328355_426c7aa750_o.jpg",
+	"author" : "Elizabeth Allen",
+	"title" : "door handles", 
+	"link" : "https://www.flickr.com/photos/elizabethallen/"
 }
+	
 
 
 ]

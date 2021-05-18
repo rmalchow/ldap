@@ -1,6 +1,6 @@
 angular.module("rooster").controller(
 	"LoginController", 
-	[ '$timeout', '$routeParams', '$rootScope', 'AuthenticationService', 'Restangular', function($timeout,$routeParams,$rootScope,AuthenticationService,Restangular) {
+	[ '$timeout', '$routeParams', '$rootScope', '$scope', 'AuthenticationService', 'Restangular', function($timeout,$routeParams,$rootScope,$scope,AuthenticationService,Restangular) {
 
 		var login = this;
 		login.status =  1;
@@ -9,12 +9,16 @@ angular.module("rooster").controller(
 
 		login.redirect = $routeParams["redirect"]
 		
+		$scope.$on("$destroy",function() {
+			$("body").attr("style", "");
+		});
+		
 		Restangular.all("ui/doors/doors.json").getList().then(
 			function(doors) {
 				if (doors.length == 0) return;
 				rand = Math.floor(doors.length * Math.random());
 				login.door = doors[rand];
-				login.update();
+				$("body").attr("style", "background: url('doors/"+login.door.file+"') no-repeat; background-size: cover; background-position: center; width: 100%; height: 100%");
 			}
 		);
 		
@@ -28,7 +32,6 @@ angular.module("rooster").controller(
 			}
 			login.status = 0;
 		}
-		
 		
 		login.reset = function() {
 			$location.path("/reset");
@@ -53,29 +56,7 @@ angular.module("rooster").controller(
 			
 		}
 		
-		
-		login.update = function() {
-
-			var height = $(window).height();
-			var width = $(window).width();
-			
-			var hr = login.door.height / height;
-			var wr = login.door.width / width;
-			
-			var r = Math.min(wr,hr);
-			
-			var w = login.door.width / r;
-			var h = login.door.height / r;
-			
-			$('#login-hero').width(w);
-			$('#login-hero').height(h);
-			
-		}
-		
 		$("#username").focus();
-		
-		$( window ).resize(login.update);
-		
 		
 		console.log("login controller <init> - ",AuthenticationService);
 	}]

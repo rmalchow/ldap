@@ -1,19 +1,6 @@
 		<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top gradient">
 			<div class="container">
 				<div class="navbar">
-					<!-- 
-					<div class="navbar-brand">
-						<img src="img/egg_white.png" height="30px">
-					</div>
-					<ul class="navbar-nav bd-navbar-nav flex-row">
-						<li menu-item="/main" class="nav-item" style="padding-right: 40px" >
-							<a href="#{{item.path}}" class="nav-link" ng-class="{'active' : item.active}">
-								<span ng-if="item.icon" class="hidden-xs showopacity {{item.icon}}"></span>							
-								{{item.title}}
-							</a>
-						</li>
-					</ul>
-					 --> 
 				</div>
 				<div class="navbar-nav ml-auto" id="navbarProfile" ng-controller="StatusController as status">
 					<ul class="navbar-nav bd-navbar-nav flex-row" ng-if="status.user.id">
