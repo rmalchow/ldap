@@ -455,7 +455,11 @@ public class ApacheDsLdapRepository implements LdapRepository {
 			Iterator<Value<?>> vi = g.get("memberOf").iterator();
 			while(vi.hasNext()) {
 				Value v = vi.next();
-				out.add(mapFromLdap(cs.lookup(new Dn(v.toString()), atts)));
+				try {
+					out.add(mapFromLdap(cs.lookup(new Dn(v.toString()), atts)));
+				} catch (Exception e) {
+					log.warn("invalid group: "+v.toString());
+				}
 			}
 			return out;
 		} catch (Exception e) {
