@@ -79,8 +79,7 @@ h4 {
 }
 
 #login-box {
-	width: 75%;
-	max-width: 600px;
+	max-width: 400px;
 	min-height: 450px;
 	padding: 50px 30px 40px 30px;
 	margin: auto;
