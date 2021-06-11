@@ -695,7 +695,7 @@ angular.module("rooster").controller(
 				if (doors.length == 0) return;
 				rand = Math.floor(doors.length * Math.random());
 				reset.door = doors[rand];
-				reset.update();
+				$("body").attr("style", "background: url('doors/"+reset.door.file+"') no-repeat; background-size: cover; background-position: center; width: 100%; height: 100%");
 			}
 		);
 		
