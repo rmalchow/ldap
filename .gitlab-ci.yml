@@ -49,4 +49,9 @@ build-manifest:
   tags:
   - docker
   script:
+  - sh scripts/build-manifest.sh
+
+  tags:
+  - docker
+  script:
   - sh scripts/build-docker-manifest.sh
