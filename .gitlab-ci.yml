@@ -1,6 +1,7 @@
 stages:
 - maven
 - docker
+- manifest
 
 cache:
   untracked: true
@@ -11,7 +12,7 @@ cache:
 build-jar:
   stage: maven
   image: harbor.rand0m.me/public/centos8-base:latest
-  tags: 
+  tags:
   - docker
   script:
   - sh scripts/build-maven.sh
@@ -20,10 +21,32 @@ build-jar:
     - ldap-app/target/ldap-app.jar
     expire_in: 20 mins
 
-build-docker:
+build-image-amd64:
   stage: docker
   image: docker
+  only:
+  - master
   tags:
   - docker
   script:
   - sh scripts/build-docker.sh
+
+build-image-aarch64:
+  stage: docker
+  image: docker
+  only:
+  - master
+  tags:
+  - docker-aarch64
+  script:
+  - sh scripts/build-docker.sh
+
+build-manifest:
+  stage: manifest
+  image: docker
+  only:
+  - master
+  tags:
+  - docker
+  script:
+  - sh scripts/build-docker-manifest.sh
