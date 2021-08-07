@@ -406,7 +406,6 @@ public class ApacheDsLdapRepository implements LdapRepository {
 					le.setNeedsReset(true);
 					return le;
 				}
-				return null;
 			}
 			
 			Entry e = embeddedADS.getAdminSession().lookup(new Dn(le.getDn()),atts);
