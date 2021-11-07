@@ -28,7 +28,6 @@ ldap:
       allowAnonymous: ${LDAP_ALLOW_ANONYMOUS:false}
    registration:
       enabled: true
-spring.profiles.active: dev
 flyway.enabled: true
 
 apacheds:
@@ -44,3 +43,4 @@ apacheds:
    listeners:
       - type: plain
         port: ${LDAP_PORT:389}
+logging.level.org.apache: FATAL
