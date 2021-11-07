@@ -4,23 +4,31 @@ spring.http.encoding.enabled: true
 spring.http.encoding.force: true
 spring.resources.cache.period: 1
 
-spring.datasource.username: ${MYSQL_USER:ldap}
-spring.datasource.password: ${MYSQL_PASSWORD:s3cr3t}
-spring.datasource.url: jdbc:mariadb://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_SCHEMA:ldap}
-
-
-
-spring.mail.host: ${MAIL_HOST:127.0.0.1}
-spring.mail.port: ${MAIL_PORT:25}
-spring.mail.sender: ${MAIL_SENDER:me@example.com}
-spring.mail.username: ${MAIL_USER:} 
-spring.mail.password: ${MAIL_PASSWORD:}
-spring.mail.properties.mail.smtp.starttls.enable: ${MAIL_STARTTLS:true}
-
-ldap.config.name: ${NAME:test ldap (local)}
-ldap.config.url: ${URL:http://127.0.0.1:8080}
-ldap.config.allowAnonymous: ${LDAP_ALLOW_ANONYMOUS:false}
-
+spring:
+   datasource:
+      username: ${MYSQL_USER:ldap}
+      password: ${MYSQL_PASSWORD:s3cr3t}
+      url: jdbc:mariadb://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_SCHEMA:ldap}
+   reader:
+      enabled: false
+      username: ${MYSQL_USER:ldap}
+      password: ${MYSQL_PASSWORD:s3cr3t}
+      url: jdbc:mariadb://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_SCHEMA:ldap}
+   mail:
+      host: ${MAIL_HOST:127.0.0.1}
+      port: ${MAIL_PORT:25}
+      sender: ${MAIL_SENDER:me@example.com}
+      username: ${MAIL_USER:} 
+      password: ${MAIL_PASSWORD:}
+      properties.mail.smtp.starttls.enable: ${MAIL_STARTTLS:true}
+ldap:
+   config:
+      name: ${NAME:test ldap (local)}
+      url: ${URL:http://127.0.0.1:8080}
+      allowAnonymous: ${LDAP_ALLOW_ANONYMOUS:false}
+   registration:
+      enabled: true
+spring.profiles.active: dev
 flyway.enabled: true
 
 apacheds:
@@ -36,7 +44,3 @@ apacheds:
    listeners:
       - type: plain
         port: ${LDAP_PORT:389}
-ldap:
-   xyz: "nase"
-   registration:
-      enabled: true

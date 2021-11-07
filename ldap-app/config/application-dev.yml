@@ -13,3 +13,4 @@ apacheds:
    listeners:
       - type: plain
         port: ${LDAP_PORT:1389}
+logging.level.org.apache: FATAL
