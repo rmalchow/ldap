@@ -447,16 +447,17 @@ public class ApacheDsLdapRepository implements LdapRepository {
 			CoreSession cs = embeddedADS.getAdminSession(); 
 			
 			Entry g = getEntryById(id, "memberOf"); 
-			
-			if(!g.containsAttribute("memberOf")) return out;
-			
-			Iterator<Value<?>> vi = g.get("memberOf").iterator();
-			while(vi.hasNext()) {
-				Value v = vi.next();
-				try {
-					out.add(mapFromLdap(cs.lookup(new Dn(v.toString()), atts)));
-				} catch (Exception e) {
-					log.warn("invalid group: "+v.toString());
+			if(g!=null) {
+				if(!g.containsAttribute("memberOf")) return out;
+				
+				Iterator<Value<?>> vi = g.get("memberOf").iterator();
+				while(vi.hasNext()) {
+					Value v = vi.next();
+					try {
+						out.add(mapFromLdap(cs.lookup(new Dn(v.toString()), atts)));
+					} catch (Exception e) {
+						log.warn("invalid group: "+v.toString());
+					}
 				}
 			}
 			return out;

@@ -19,7 +19,7 @@
 		<springboot-maven.version>${springboot.version}</springboot-maven.version>
 		<spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
 		<springframework.ldap.version>2.3.1.RELEASE</springframework.ldap.version>
-		<dbutil.version>0.0.62</dbutil.version>
+		<dbutil.version>0.0.74</dbutil.version>
 		<apitester.version>0.1.5</apitester.version>
 		<spring-jwt.version>0.1.30</spring-jwt.version>
 		<commons-lang3.version>3.8.1</commons-lang3.version>

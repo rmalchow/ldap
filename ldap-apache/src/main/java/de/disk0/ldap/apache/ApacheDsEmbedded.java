@@ -222,33 +222,45 @@ public class ApacheDsEmbedded {
 			
 
 			{
-				List<Modification> mis = new ArrayList<Modification>();
-				
-				Attribute a = new DefaultAttribute("userPassword",  config.getAdminPassword());
-				Modification m = null;
-				if(adminEntry.containsAttribute("userPassword")) {
-					log.info("updating admin password: " + config.getAdminPassword());
-					m = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, a);
-				} else {
-					log.info("setting admin password: " + config.getAdminPassword());
-					m = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, a);
-				}
-				mis.add(m);
-	
-				if(!adminEntry.contains("objectClass", "simulatedMicrosoftSecurityPrincipal")) {
-					mis.add(new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, new DefaultAttribute("objectClass","simulatedMicrosoftSecurityPrincipal")));
-				}
-				
-				if(!adminEntry.containsAttribute("userPrincipalName")) {
-					log.info("adding userPrincipalName: " + config.getAdminPassword());
-					mis.add(new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, new DefaultAttribute("userPrincipalName","admin")));
-					mis.add(new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, new DefaultAttribute("sAMAccountName","admin")));
-				}
-	
 				CoreSession cs = service.getAdminSession();
 				log.info("admin session: "+(cs==null?"[NULL]":"[OK]"));
 				
-				cs.modify(adminDn, mis);
+				
+				{
+					List<Modification> mis = new ArrayList<Modification>();
+					
+					Attribute a = new DefaultAttribute("userPassword",  config.getAdminPassword());
+					Modification m = null;
+					if(adminEntry.containsAttribute("userPassword")) {
+						log.info("updating admin password: " + config.getAdminPassword());
+						m = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, a);
+					} else {
+						log.info("setting admin password: " + config.getAdminPassword());
+						m = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, a);
+					}
+					mis.add(m);
+					cs.modify(adminDn, mis);
+				}
+				{
+					List<Modification> mis = new ArrayList<Modification>();
+	
+					if(!adminEntry.contains("objectClass", "simulatedMicrosoftSecurityPrincipal")) {
+						mis.add(new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, new DefaultAttribute("objectClass","simulatedMicrosoftSecurityPrincipal")));
+					}
+					cs.modify(adminDn, mis);
+				}
+				
+				{
+					List<Modification> mis = new ArrayList<Modification>();
+					if(!adminEntry.containsAttribute("userPrincipalName")) {
+						log.info("adding userPrincipalName: " + config.getAdminPassword());
+						mis.add(new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, new DefaultAttribute("userPrincipalName","admin")));
+						mis.add(new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, new DefaultAttribute("sAMAccountName","admin")));
+					}
+					cs.modify(adminDn, mis);
+				}
+	
+
 			}
 
 		} catch (Exception e) {

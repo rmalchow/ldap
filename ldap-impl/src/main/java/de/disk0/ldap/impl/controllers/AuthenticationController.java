@@ -102,7 +102,11 @@ public class AuthenticationController {
 		User user = SessionHolder.get();
 		log.info("before auth - user is: "+user);
 		if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-			user = ldapService.update(user.getId());
+			try {
+				user = ldapService.update(user.getId());
+			} catch (Exception e) {
+				user = new User();
+			}
 		} else {
 			// to allow comma-separated lists 
 			List<String> gIds = new ArrayList<String>();

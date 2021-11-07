@@ -133,11 +133,13 @@
 	</div>
 	<div class="row" ng-if="ldap.setpw.show">
 		<div class="col-md-3" ng-if="ldap.self">
+			<label>Current password</label>
 			<div class="form-group">
 				<input type="password" ng-model="ldap.setpw.oldPw" class="form-control" placeholder="Enter current password" >
 			</div>
 		</div>
 		<div  ng-class="{'col-3' : ldap.self, 'col-4' : !ldap.self}">
+			<label>New password</label>
 			<div class="form-group">
 				<div class="input-group">
 					<input ng-if="!ldap.setpw.visiblePw" type="password" ng-model="ldap.setpw.pw1" class="form-control" placeholder="Enter password (8 chars min)" ng-change="ldap.checkPassword(ldap.setpw)">
@@ -151,6 +153,7 @@
 			</div>
 		</div>
 		<div  ng-class="{'col-3' : ldap.self, 'col-4' : !ldap.self}">
+			<label>Repeat new password</label>
 			<div class="form-group">
 				<input ng-if="!ldap.setpw.visiblePw" type="password" ng-disabled="ldap.setpw.progress < 100" ng-model="ldap.setpw.pw2" class="form-control" placeholder="confirm password" ng-change="ldap.checkPassword(ldap.setpw)">
 				<input ng-if="ldap.setpw.visiblePw" ng-disabled="ldap.setpw.progress < 100" ng-model="ldap.setpw.pw2" class="form-control" placeholder="confirm password" ng-change="ldap.checkPassword(ldap.setpw)">

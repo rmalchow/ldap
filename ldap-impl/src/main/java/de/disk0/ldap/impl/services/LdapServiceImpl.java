@@ -411,12 +411,14 @@ public class LdapServiceImpl implements LdapService {
 
 	@Override
 	public User update(String id) throws AuthException {
-		
-		if(id == null) {
-			return new User();
-		}
+
 		try {
+			
+			if(id==null) throw new NotAuthenticatedException();
+			
 			LdapEntry e = entryRepo.get(id);
+			if(e==null) throw new NotAuthenticatedException();
+			
 			User user = new User();
 			
 			user.setId(e.getId());
@@ -437,7 +439,7 @@ public class LdapServiceImpl implements LdapService {
 			return user;
 		} catch (Exception e2) {
 			log.warn("something went wrong: ",e2);
-			throw new AuthFailedException();
+			throw new NotAuthenticatedException();
 		}
 	}
 

@@ -39,7 +39,7 @@
 				<groupId>com.github.eirslett</groupId>
 				<version>1.3</version>
 				<configuration>
-					<nodeVersion>v6.9.1</nodeVersion>
+					<nodeVersion>v9.9.0</nodeVersion>
 					<nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
 					<workingDirectory>src/main/js</workingDirectory>
 					<installDirectory>target/node</installDirectory>
