@@ -337,6 +337,10 @@ angular.module("rooster").controller(
 		
 		ldap.open($routeParams["objectId"]);
 		
+		$rootScope.$on("auth",function() {
+			ldap.open($routeParams["objectId"]);
+		});
+		
 	}]
 	
 );
