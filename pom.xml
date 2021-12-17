@@ -270,6 +270,16 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<artifactId>log4j-api</artifactId>
+				<groupId>org.apache.logging.log4j</groupId>
+				<version>2.16.0</version>
+			</dependency>
+			<dependency>
+				<artifactId>log4j-to-slf4j</artifactId>
+				<groupId>org.apache.logging.log4j</groupId>
+				<version>2.16.0</version>
+			</dependency>
 		</dependencies>
 
 	</dependencyManagement>
