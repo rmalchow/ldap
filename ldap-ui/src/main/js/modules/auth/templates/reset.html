@@ -17,7 +17,7 @@
 				</div>				
 				<div class="col-md-12">
 					<div class="form-group">
-						Please enter your username. If we find a matching account, we will send you an email with further instructions.
+						Please enter your username.
 					</div>
 				</div>
 				<div class="col-md-12">
@@ -34,6 +34,14 @@
 					</div>
 				</div>
 				<div class="col-md-12" ng-if="reset.initiateStep == 2">
+					<div class="form-group">
+						<div class="input-group">
+							If a matching account exists, you should now reveive an email with further instructions.
+						</div>
+						<div class="input-group">
+							Please check your mailbox.
+						</div>
+					</div> 
 					<div class="form-group">
 						<input class="form-control" placeholder="Enter token" ng-model="reset.token" >
 					</div>
