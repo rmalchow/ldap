@@ -195,18 +195,18 @@ gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
     port: 389
     uid: 'uid'
     ####### Here, we put the LDAP user & password
-	bind_dn: 'uid=admin,ou=system'
-	password: 's3cr3t'
-	############
+    bind_dn: 'uid=admin,ou=system'
+    password: 's3cr3t'
+    ############
 
-	# no support for TLS (yet)
-	encryption: 'plain'
-	verify_certificates: true
-	active_directory: false
-	allow_username_or_email_login: false
-	lowercase_usernames: false
-	block_auto_created_users: false
-	base: 'dc=my.base.dn'
+    # no support for TLS (yet)
+    encryption: 'plain'
+    verify_certificates: true
+    active_directory: false
+    allow_username_or_email_login: false
+    lowercase_usernames: false
+    block_auto_created_users: false
+    base: 'dc=my.base.dn'
 
     ####### this should be something that actually filters for a group
     user_filter: 'memberOf=CN=gitlab-users,OU=groups,OU=home[...]'
@@ -218,4 +218,3 @@ gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
         last_name:  'sn'
         sync_ssh_keys: false
 ```
-
