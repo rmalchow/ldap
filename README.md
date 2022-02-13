@@ -8,7 +8,7 @@ this application also ignores a lot of the finer points of LDAP, painting object
 
 ---
 
-people who user this also user: my auth proxy - check it out [here](https://github.com/rmalchow/auth-proxy) 
+people who user this also user: my auth proxy - check it out [here](https://github.com/rmalchow/auth-proxy)
 
 ---
 
@@ -62,7 +62,7 @@ this needs one volume mounted for the LDAP datafiles. It also needs a MariaDB co
 
 #### Docker Compose / Helm
 
-An example docker compose file as well as a helm chart can be found in this repo.
+An example docker compose file as well as a helm chart can be found [here](example).
 
 **Env vars for use with docker compose**
 
@@ -84,8 +84,6 @@ An example docker compose file as well as a helm chart can be found in this repo
 | MAIL_PASSWORD | "smtp_pw"|
 | MAIL_HOST | "mail.example.com"|
 | MAIL_PORT | 587|
-
-
 
 
 **Values for user with HELM**
@@ -110,7 +108,8 @@ An example docker compose file as well as a helm chart can be found in this repo
 
 ### LDAP container
 
-- container port **8080**
+- http listener on port **8080**
+- ldap listener on port **389**
 - persistent volume mounted to **/app/data**
 
 | Name            | Value                  | Description                                                  |
@@ -169,3 +168,54 @@ if everything is ok, the response body will contain a user object, and the serve
 ### Renewing Authentication Tokens
 
 a simple POST call to the authentication endpoint without parameters, but with a valid JWT token will return the authenticated user in the body, along with a freshly issued JWT cookie.
+
+
+
+## Configure other Applications to use LDAP
+
+Every application does this slightly differently, but in general, the process goes something like this:
+
+- The user enters username and password
+
+- The application uses a "bind user" to connect to LDAP and find a matching LDAP object.
+- The application tries to bin with the DN (=distinguished name) and of that LDAP object with the password entered by the user
+- If this succeeds, the application retrieves some fields (i.e. email and display name) for further use
+
+
+
+### gitlab
+
+here's an example of my LDAP server configured in `gitlab.rb`
+
+```yaml
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+  main:
+    label: 'LDAP'
+    host: '192.168.21.220'
+    port: 389
+    uid: 'uid'
+    ####### Here, we put the LDAP user & password
+	bind_dn: 'uid=admin,ou=system'
+	password: 's3cr3t'
+	############
+
+	# no support for TLS (yet)
+	encryption: 'plain'
+	verify_certificates: true
+	active_directory: false
+	allow_username_or_email_login: false
+	lowercase_usernames: false
+	block_auto_created_users: false
+	base: 'dc=my.base.dn'
+
+    ####### this should be something that actually filters for a group
+    user_filter: 'memberOf=CN=gitlab-users,OU=groups,OU=home[...]'
+    ############
+
+    attributes:
+        name:       'cn'
+        first_name: 'givenname'
+        last_name:  'sn'
+        sync_ssh_keys: false
+```
+
