@@ -83,7 +83,26 @@ An example docker compose file as well as a helm chart can be found [here](examp
 | MAIL_USER | "me-example.com@smtp.server"|
 | MAIL_PASSWORD | "smtp_pw"|
 | MAIL_HOST | "mail.example.com"|
-| MAIL_PORT | 587|
+| MAIL_PORT | 25 |
+| MAIL_STARTTLS | true |
+
+**StartTLS vs TLS**
+
+if you want to use TLS on port 465 directly (not StartTLS), you will have to enable the included "SMTPS" profile using:
+
+`spring_profiles_active=smtps`
+
+this will change the socketfactory used:
+
+```
+spring.mail.properties.mail.smtp.socketFactory.port: 465
+spring.mail.properties.mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+```
+
+**Trust self-signed certificates**
+
+Don't, please. 
+
 
 
 **Values for user with HELM**

@@ -13,6 +13,11 @@
 	<artifactId>ldap-apache</artifactId>
 	<dependencies>
 		<dependency>
+			<groupId>de.disk0.ldap</groupId>
+			<artifactId>ldap-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
@@ -44,64 +49,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.apache.directory.server</groupId>
-			<artifactId>apacheds-protocol-ldap</artifactId>
-			<version>${apacheds.version}</version>
-			<exclusions>
-				<exclusion>
-				    <groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.directory.server</groupId>
-			<artifactId>apacheds-core-api</artifactId>
-			<version>${apacheds.version}</version>
-			<exclusions>
-				<exclusion>
-				    <groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.directory.server</groupId>
-			<artifactId>apacheds-core</artifactId>
-			<version>${apacheds.version}</version>
-			<exclusions>
-				<exclusion>
-				    <groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.directory.server</groupId>
-			<artifactId>apacheds-service</artifactId>
-			<version>${apacheds.version}</version>
-			<exclusions>
-				<exclusion>
-				    <groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.directory.server</groupId>
-			<artifactId>apacheds-interceptors-hash</artifactId>
-			<version>${apacheds.version}</version>
-			<exclusions>
-				<exclusion>
-				    <groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		 -->
-		
 	</dependencies>
 
 </project>

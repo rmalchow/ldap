@@ -58,6 +58,7 @@ import de.disk0.ldap.apache.interceptors.ApacheDsBindInterceptor;
 import de.disk0.ldap.apache.interceptors.ApacheDsMemberOfInterceptor;
 import de.disk0.ldap.apache.utils.CustomSchemaLdifExtractor;
 import de.disk0.ldap.apache.utils.LdapUtil;
+import de.disk0.ldap.api.totp.TotpCallback;
 
 @Service
 public class ApacheDsEmbedded {
@@ -77,7 +78,7 @@ public class ApacheDsEmbedded {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
-
+	
 	public ApacheDsEmbedded() throws Exception {
 	}
 

@@ -71,7 +71,7 @@ public class AuthenticationController {
 	}
 
 	@ResponseStatus(value = org.springframework.http.HttpStatus.NO_CONTENT)
-	@PostMapping(value="password")
+	@PostMapping(value="/password")
 	public void updatePassword(@RequestParam String oldPassword, @RequestParam String newPassword) throws Exception {
 		ldapService.setPassword(SessionHolder.get().getId(), oldPassword, newPassword);
 	}

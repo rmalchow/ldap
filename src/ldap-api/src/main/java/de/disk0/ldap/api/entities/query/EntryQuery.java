@@ -12,6 +12,7 @@ public class EntryQuery {
 	private List<String> entryIds;
 	private String parentId;
 	private String username;
+	private String dn;
 	private List<EntryType> types;
 	private List<String> principalIds;
 	private List<LdapPermission> permissions;
@@ -136,6 +137,15 @@ public class EntryQuery {
 
 	public void setIncludeIgnored(boolean includeIgnored) {
 		this.includeIgnored = includeIgnored;
+	}
+
+	public String getDn() {
+		return dn;
+	}
+
+	public EntryQuery setDn(String dn) {
+		this.dn = dn;
+		return this;
 	}
 	
 }

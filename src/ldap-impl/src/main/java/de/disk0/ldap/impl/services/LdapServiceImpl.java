@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 
@@ -39,25 +40,29 @@ import de.disk0.ldap.api.entities.query.EntryQuery;
 import de.disk0.ldap.api.entities.session.SessionHolder;
 import de.disk0.ldap.api.entities.session.User;
 import de.disk0.ldap.api.exceptions.AuthException;
-import de.disk0.ldap.api.exceptions.AuthFailedException;
 import de.disk0.ldap.api.exceptions.LdapException;
 import de.disk0.ldap.api.exceptions.NotAuthenticatedException;
 import de.disk0.ldap.api.exceptions.NotAuthorizedException;
 import de.disk0.ldap.api.services.LdapRepository;
 import de.disk0.ldap.api.services.LdapService;
+import de.disk0.ldap.api.totp.LocalOtp;
+import de.disk0.ldap.api.totp.TotpCallback;
+import de.disk0.ldap.api.totp.TotpCallbackRegistry;
+import de.disk0.ldap.api.totp.TotpUtil;
 import de.disk0.ldap.api.utils.AuthUtils;
 import de.disk0.ldap.api.utils.PasswordGenerator;
 import de.disk0.ldap.api.utils.TokenGenerator;
 import de.disk0.ldap.impl.services.repos.EntryAclRepo;
 import de.disk0.ldap.impl.services.repos.EntryRepo;
 import de.disk0.ldap.impl.services.repos.MembershipRepo;
+import de.disk0.ldap.impl.services.repos.OtpRepo;
 import de.disk0.ldap.impl.services.repos.TokenRepo;
 import de.disk0.ldap.mail.api.MailService;
 
 
 @Service
 @Order(value = Ordered.LOWEST_PRECEDENCE)
-public class LdapServiceImpl implements LdapService {
+public class LdapServiceImpl implements LdapService, TotpCallback {
 
 	private static final Log log = LogFactory.getLog(LdapServiceImpl.class);
 
@@ -75,6 +80,9 @@ public class LdapServiceImpl implements LdapService {
 	
 	@Autowired
 	private TokenRepo tokenRepo;
+	
+	@Autowired
+	private OtpRepo otpRepo;
 	
 	@Autowired
 	private MailService mailService;
@@ -595,6 +603,53 @@ public class LdapServiceImpl implements LdapService {
 		}
 		throw new NotAuthorizedException();
 		
+	}
+
+	@Override
+	public String callback(String dn, String password) {
+		try {
+			
+			if(StringUtils.isEmpty(dn)) {
+				throw new RuntimeException("invalid credentials");
+			}
+
+			EntryQuery eq = EntryQuery
+					.create()
+					.setDn(dn);
+			
+			log.error(entryRepo.createSelect(eq));
+			
+			LdapEntry e = entryRepo.findOne(eq);
+			if(e==null) {
+				throw new RuntimeException("invalid credentials");
+			}
+			
+			LocalOtp otp = otpRepo.get(e.getId());
+			if(otp==null) {
+				log.info("No OTP enrolled for user: "+e.getDisplayname());
+				return null;
+			}
+			
+			
+			
+			String pw = password.substring(0,password.length()-otp.getDigits()); 
+			String token = password.substring(password.length()-otp.getDigits());
+			
+			if(TotpUtil.check(otp.getSecret(),otp.getHashAlgorithm(), token, 0, 0, 0)) {
+				return pw;
+			} else {
+				throw new RuntimeException("invalid credentials");
+			}
+			
+		} catch (Exception e) {
+			log.error("error checking OTP",e);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@PostConstruct
+	public void init() {
+		TotpCallbackRegistry.add(this);
 	}
 	
 }

@@ -53,6 +53,7 @@ public class EntryRepo extends AbstractGuidRepository<LdapEntry> {
 		List<String> principalIds = query.getPrincipalIds(); 
 		principalIds = principalIds==null?new ArrayList<String>():principalIds;
 		
+		
 		if(permissions.size()==0) {
 			log.debug("not imposing any limits ... (no permissions)");
 			// not imposing limits
@@ -72,6 +73,10 @@ public class EntryRepo extends AbstractGuidRepository<LdapEntry> {
 			if(permissions.contains(LdapPermission.READ)) {
 				trAcl.addOn(Operator.OR,trEntry.field("id"),Comparator.IN,trEntry.value(principalIds));
 			}
+		}
+		
+		if(!StringUtils.isEmpty(query.getDn())) {
+			select.condition(Operator.AND, trEntry.field("dn"), Comparator.LIKE, trEntry.value(query.getDn()));
 		}
 		
 		if(!StringUtils.isEmpty(query.getUsername())) {
@@ -187,6 +192,8 @@ public class EntryRepo extends AbstractGuidRepository<LdapEntry> {
 
 	public LdapEntry findOne(EntryQuery eq) throws SqlException {
 		Select s = createSelect(eq);
+		log.info(s.getSql());
+		log.info(eq.getDn());
 		return findOne(s.getSql(), s.getParams());
 	}
 
